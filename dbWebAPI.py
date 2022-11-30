@@ -4,7 +4,7 @@
 #coding=utf-8
 from flask import Flask, request, render_template, jsonify, Response
 from flask_restful import reqparse, abort, Api, Resource
-from rdsAdmin import rdsDescribe, rdsCreate, rdsDelete
+from rdsAdmin import RDSDescribe, RDSCreate, RDSDelete
 import boto3
 import sys
 import json
