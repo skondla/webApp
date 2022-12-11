@@ -174,7 +174,7 @@
             ],
             "OnBuild": null,
             "Labels": {
-                "maintainer": "Sudheer Kondla, sudheer.kondla@ibm.com"
+                "maintainer": "Sudheer Kondla, sudheer.kondla@gmail.com"
             }
         },
         "NetworkSettings": {
