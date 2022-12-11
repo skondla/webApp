@@ -7,7 +7,7 @@ import boto3
 import sys
 import json
 
-class rdsCreate:
+class RDSCreate:
 
     def rds_create_db_cluster_snapshot(self, snapshotName, dbname, tagName):
         client = boto3.client('rds')
@@ -22,7 +22,7 @@ class rdsCreate:
                                          Tags=[{'Key': 'Name', 'Value': tagName}, ])
         print(response)
 
-class rdsDelete:
+class RDSDelete:
     def rds_delete_db_cluster_snapshot(self, snapshotName):
         client = boto3.client('rds')
         response = client.delete_db_cluster_snapshot(DBClusterSnapshotIdentifier=snapshotName)
@@ -35,7 +35,7 @@ class rdsDelete:
         )
         print(response)
  
-class rdsDescribe:
+class RDSDescribe:
     def rds_desc_db_instances(self, dbname):
         client = boto3.client('rds')
         response = client.describe_db_instances(DBInstanceIdentifier=dbname)

@@ -4,7 +4,7 @@
 #coding=utf-8
 from flask import Flask, request, render_template, jsonify, Response
 from flask_restful import reqparse, abort, Api, Resource
-from rdsAdmin import rdsDescribe, rdsCreate, rdsDelete
+from rdsAdmin import RDSDescribe, RDSCreate, RDSDelete
 import boto3
 import sys
 import json
@@ -81,34 +81,34 @@ def names():
 def snapshotStaus(snapshotName,dBURL):
     if 'cluster' in dBURL:
         print (dBURL + ' is a cluster')
-        return rdsDescribe().db_cluster_snapshot_status(snapshotName)
+        return RDSDescribe().db_cluster_snapshot_status(snapshotName)
     else:
         print (dBURL + ' is NOT a cluster')
-        return rdsDescribe().db_snapshot_status(snapshotName)
+        return RDSDescribe().db_snapshot_status(snapshotName)
 
 def dbInstanceInfo(instanceName,string):
     if 'cluster' in string:
         print (string + ' is a cluster')
-        return rdsDescribe().describe_db_clusters(instanceName)
+        return RDSDescribe().describe_db_clusters(instanceName)
     else:
         print (string + ' is NOT a cluster')
-        return rdsDescribe().rds_desc_db_instances(instanceName)
+        return RDSDescribe().rds_desc_db_instances(instanceName)
 
 def createSnapshot(snapshotName, instanceName, tagName, string):
     if 'cluster' in string:
         print (string + ' is a cluster')
-        return rdsCreate().rds_create_db_cluster_snapshot(snapshotName,instanceName,tagName)
+        return RDSCreate().rds_create_db_cluster_snapshot(snapshotName,instanceName,tagName)
     else:
         print (string + ' is NOT a cluster')
-        return rdsCreate().rds_create_db_snapshot(snapshotName,instanceName,tagName)
+        return RDSCreate().rds_create_db_snapshot(snapshotName,instanceName,tagName)
 
 def deleteSnapshot(snapshotName,dBURL):
     if 'cluster' in dBURL:
         print (dBURL + ' is a cluster')
-        return rdsDelete().rds_delete_db_cluster_snapshot(snapshotName)
+        return RDSDelete().rds_delete_db_cluster_snapshot(snapshotName)
     else:
         print (dBURL + ' is NOT a cluster')
-        return rdsDelete().delete_db_snapshot(snapshotName)
+        return RDSDelete().delete_db_snapshot(snapshotName)
 
 def appConfig():
     with open('appConfig.yaml', 'r') as f:

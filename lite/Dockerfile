@@ -10,7 +10,7 @@ RUN pip3 install -r requirements.txt
 RUN cp lib/rdsAdmin.py /usr/local/lib/python3.8
 RUN apk add curl
 RUN chmod +x dbWebAPI.sh
-RUN chown -R app:app /app
+#RUN chown -R app:app /app
 USER app
 EXPOSE 50443
 ENTRYPOINT [ "/bin/bash" ]
