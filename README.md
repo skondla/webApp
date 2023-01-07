@@ -14,8 +14,7 @@
     ['', '/Users/skondla/miniconda3/lib/python38.zip', '/Users/skondla/miniconda3/lib/python3.8', '/Users/skondla/miniconda3/lib/python3.8/lib-dynload', '/Users/skondla/miniconda3/lib/python3.8/site-packages']
 
 ## Alternatively cp files in lib directory to common python libriary (check version) 
-sudo cp lib/rdsAdmin.py /usr/lib/python2.7
-```
+    sudo cp lib/rdsAdmin.py /usr/lib/python2.7
 
 ## Change appConfig.yaml hostname and port matching your host IP
 ## scheduled to run in cron
@@ -34,8 +33,7 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
     --data "endpoint=tve-integ-postgresdb-aurora.cluster-ro-ckbgoobdxe24.us-east-1.rds.amazonaws.com"; \
     echo
   
-    #(https://10.10.x.x:25443/backup/create)  
-
+    [//]: # (https://10.10.x.x:25443/backup/create)  
 
     #check cluster db snapshot
   
