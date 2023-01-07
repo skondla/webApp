@@ -35,7 +35,7 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
     echo
   
     <!--https://10.10.x.x:25443/backup/create-->
-    [//]: # (https://10.10.x.x:25443/backup/create)
+    [//]: # (https://10.10.x.x:25443/backup/create)  
 
     #check cluster db snapshot
   
