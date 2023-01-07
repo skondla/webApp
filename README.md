@@ -8,11 +8,8 @@
     $ python3 -V
     Python 3.8.5
     $ pip install -r requirements.txt --user
-  
     #find where to copy libraries - for example
-    
     $ python3 -c "import sys; print(sys.path)"
-
     output: 
     ['', '/Users/skondla/miniconda3/lib/python38.zip', '/Users/skondla/miniconda3/lib/python3.8', '/Users/skondla/miniconda3/lib/python3.8/lib-dynload', '/Users/skondla/miniconda3/lib/python3.8/site-packages']
 
@@ -21,15 +18,10 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
 ```
 
 ## Change appConfig.yaml hostname and port matching your host IP
-
-
 ## scheduled to run in cron
-
     #DB webApp
     */5 * * * * /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py > /data2/api/db/log 2>&1
     
-
-
 ## How to Access webApp via HTTPS or CURL
 
     #Main Page
@@ -42,8 +34,7 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
     --data "endpoint=tve-integ-postgresdb-aurora.cluster-ro-ckbgoobdxe24.us-east-1.rds.amazonaws.com"; \
     echo
   
-
-    #https://10.10.x.x:25443/backup/create
+    [//]: # (https://10.10.x.x:25443/backup/create)
 
     #check cluster db snapshot
   
