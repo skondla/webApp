@@ -5,17 +5,18 @@
     This source code is an example of taking an automatic on-demand backup of an RDS instance running in AWS VPC using AWS Python SDK (boto3). Alternatively 
 ## Setup Instructions:
 
+    $ python3 -V
+    Python 3.8.5
+    $ pip install -r requirements.txt --user
   
-    pip install -r requirements.txt --user
-  
-    find where to copy libraries - for example
-  
-    python -c "import sys; print(sys.path)" - will dispaly your current python envionment
-  
-    /*
-    ['', '/usr/lib/python2.7', '/usr/lib/python2.7/plat-x86_64-linux-gnu', '/usr/lib/python2.7/lib-tk', '/usr/lib/python2.7/lib-old', '/usr/lib/python2.7/lib-dynload', '/home/admin/.local/lib/python2.7/site-packages', '/usr/local/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages'] */
+    #find where to copy libraries - for example
+    
+    $ python3 -c "import sys; print(sys.path)"
 
-```
+    output: 
+    ['', '/Users/skondla/miniconda3/lib/python38.zip', '/Users/skondla/miniconda3/lib/python3.8', '/Users/skondla/miniconda3/lib/python3.8/lib-dynload', '/Users/skondla/miniconda3/lib/python3.8/site-packages']
+
+## Alternatively cp files in lib directory to common python libriary (check version) 
 sudo cp lib/rdsAdmin.py /usr/lib/python2.7
 ```
 
