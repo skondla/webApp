@@ -79,5 +79,9 @@ COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 python  13054 admin    4u  IPv4  38308      0t0  TCP ip-10.96.6.124.clearleap.com:25443 (LISTEN)
 python  13256 admin    4u  IPv4  38308      0t0  TCP ip-10.96.6.124.clearleap.com:25443 (LISTEN)
 ```
+
+## Architecture flow
+
+![Alt text](images/dbAPIapp.png)
 # webApp
 #Contact: skondla@me.com
