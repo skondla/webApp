@@ -5,13 +5,13 @@
     This source code is an example of taking an automatic on-demand backup of an RDS instance running in AWS VPC using AWS Python SDK (boto3). Alternatively 
 ## Setup Instructions:
 
-    ```
+  
     pip install -r requirements.txt --user
-    ```
+  
     find where to copy libraries - for example
-    ```
+  
     python -c "import sys; print(sys.path)" - will dispaly your current python envionment
-    ```
+  
     /*
     ['', '/usr/lib/python2.7', '/usr/lib/python2.7/plat-x86_64-linux-gnu', '/usr/lib/python2.7/lib-tk', '/usr/lib/python2.7/lib-old', '/usr/lib/python2.7/lib-dynload', '/home/admin/.local/lib/python2.7/site-packages', '/usr/local/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages'] */
 
@@ -25,9 +25,8 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
 ## scheduled to run in cron
 
     #DB webApp
-    ```
     */5 * * * * /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py > /data2/api/db/log 2>&1
-    ```
+    
 
 
 ## How to Access webApp via HTTPS or CURL
@@ -37,37 +36,37 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
     #https://10.10.x.x:25443/backup
 
     #create cluster db snapshot
-    ```
+  
     curl -k https://10.10.x.x:25443/backup/create \
     --data "endpoint=tve-integ-postgresdb-aurora.cluster-ro-ckbgoobdxe24.us-east-1.rds.amazonaws.com"; \
     echo
-    ```
+  
 
     #https://10.10.x.x:25443/backup/create
 
     #check cluster db snapshot
-    ```
+  
     curl -k https://10.10.x.x:25443/backup/status \
     --data "snapshotname=tve-integ-postgresdb-aurora-snapshot-2019-06-23-22-21-57" \
     --data "endpoint=tve-integ-postgresdb-aurora.cluster-ro-ckbgoobdxe24.us-east-1.rds.amazonaws.com"; \
     echo
-    ```
+  
     #https://10.10.x.x:25443/backup/status
 
     #delete cluster db snapshot
-    ```
+  
     curl -k https://10.10.x.x:25443/backup/delete \
     --data "snapshotname=tve-integ-postgresdb-aurora-snapshot-2019-06-23-22-21-57" \
     --data "endpoint=tve-integ-postgresdb-aurora.cluster-ro-ckbgoobdxe24.us-east-1.rds.amazonaws.com"; \
     echo
-    ```
+  
     #https://10.10.x.x:25443/backup/delete
 
 
 ##  Checking Connections
     * Troubleshooting*
 
-    ```
+  
     admin@ip-10-96-6-124:/data2/api/db$ ps -ef|grep dbWebAPI.py 
     admin    13047 13042  0 21:00 ?        00:00:00 /bin/sh -c /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py > /data2/api/db/log 2>&1
     admin    13051 13047  0 21:00 ?        00:00:00 /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py
@@ -82,7 +81,7 @@ sudo cp lib/rdsAdmin.py /usr/lib/python2.7
     COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
     python  13054 admin    4u  IPv4  38308      0t0  TCP ip-10.96.6.124.clearleap.com:25443 (LISTEN)
     python  13256 admin    4u  IPv4  38308      0t0  TCP ip-10.96.6.124.clearleap.com:25443 (LISTEN)
-    ```
+  
 
 ## Architecture flow
 
