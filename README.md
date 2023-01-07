@@ -33,7 +33,7 @@
     --data "endpoint=tve-integ-postgresdb-aurora.cluster-ro-ckbgoobdxe24.us-east-1.rds.amazonaws.com"; \
     echo
   
-    [//]: # (https://10.10.x.x:25443/backup/create)  
+    !<---(https://10.10.x.x:25443/backup/create)-->
 
     #check cluster db snapshot
   
