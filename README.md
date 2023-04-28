@@ -14,7 +14,7 @@
     ['', '/Users/skondla/miniconda3/lib/python38.zip', '/Users/skondla/miniconda3/lib/python3.8', '/Users/skondla/miniconda3/lib/python3.8/lib-dynload', '/Users/skondla/miniconda3/lib/python3.8/site-packages']
 
 ## Alternatively cp files in lib directory to common python libriary (check version) 
-    sudo cp lib/rdsAdmin.py /usr/lib/python2.7
+    sudo cp lib/rdsAdmin.py /Users/skondla/miniconda3/lib/python3.8
 
 ## Change appConfig.yaml hostname and port matching your host IP
 ## scheduled to run in cron
