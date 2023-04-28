@@ -64,14 +64,14 @@
     admin    13054 13051  6 21:00 ?        00:00:00 python /data2/api/db/dbWebAPI.py
     admin    13256 13054  6 21:00 ?        00:00:00 python /data2/api/db/dbWebAPI.py
     admin    13454 12829  0 21:00 pts/0    00:00:00 grep dbWebAPI.py
-    admin@ip-10-96-6-124:/data2/api/db$ netstat -an | grep 10.96.6.124
-    tcp        0      0 10.96.6.124:25443       0.0.0.0:*               LISTEN     
-    tcp        0     36 10.96.6.124:22          10.200.209.167:63473    ESTABLISHED
-    udp        0      0 10.96.6.124:123         0.0.0.0:*                          
+    admin@ip-10-96-6-124:/data2/api/db$ netstat -an | grep 10.78.2.42
+    tcp        0      0 10.78.2.42:25443       0.0.0.0:*               LISTEN     
+    tcp        0     36 10.78.2.42:22          10.200.209.167:63473    ESTABLISHED
+    udp        0      0 10.78.2.42:123         0.0.0.0:*                          
     admin@ip-10-96-6-124:/data2/api/db$ lsof -i :25443
     COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-    python  13054 admin    4u  IPv4  38308      0t0  TCP ip-10.96.6.124.clearleap.com:25443 (LISTEN)
-    python  13256 admin    4u  IPv4  38308      0t0  TCP ip-10.96.6.124.clearleap.com:25443 (LISTEN)
+    python  13054 admin    4u  IPv4  38308      0t0  TCP ip-10.78.2.42.datacube.com:25443 (LISTEN)
+    python  13256 admin    4u  IPv4  38308      0t0  TCP ip-10.78.2.42.datacube.com:25443 (LISTEN)
   
 
 ## Architecture flow
