@@ -8,8 +8,19 @@ pipeline {
     }
 
     stage('test') {
-      steps {
-        echo 'testing stage'
+      parallel {
+        stage('test') {
+          steps {
+            echo 'testing stage'
+          }
+        }
+
+        stage('period') {
+          steps {
+            sleep(time: 5, unit: 'MINUTES')
+          }
+        }
+
       }
     }
 
