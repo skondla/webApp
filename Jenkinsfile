@@ -11,7 +11,7 @@ pipeline {
 
         stage('check') {
           steps {
-            timeout(time: 180)
+            timeout(time: 10, unit: 'MINUTES')
           }
         }
 
