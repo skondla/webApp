@@ -103,7 +103,7 @@ gcloud projects add-iam-policy-binding $GKE_PROJECT \
   --role=roles/artifactregistry.admin
 
 # Download JSON
-gcloud iam service-accounts keys create key.json --iam-account=$GKE_SVC_MAIL
+gcloud iam service-accounts keys create ~/.private/key.json --iam-account=$GKE_SVC_MAIL
 
 # Build and push the docker image
 docker build --tag \
@@ -153,5 +153,5 @@ echo ""
 echo ""
 echo "Please create a secret named 'GKE_SA_KEY' in GitHub with the followign content:"
 echo ""
-cat key.json | base64
+cat ~/.private/key.json | base64
 echo ""
