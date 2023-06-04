@@ -11,6 +11,7 @@ env:
   GKE_APP_NAME: webapp1-demo-shop
   GKE_SERVICE: webapp1-service
   GKE_SERVICE_ACCOUNT: webapp1-serviceaccount
+  GKE_NAMESPACE: web-ns
   GKE_DEPLOYMENT_NAME: webapp1-deployment
   GKE_REGION: us-east4
   GKE_ZONE: us-east4-a
@@ -20,7 +21,8 @@ env:
   APP_VERSION: ${{ github.sha }}
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
   APP_DIR: .
-  GKE_NAMESPACE: web
+  
+
 
 jobs:
   Build:

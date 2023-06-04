@@ -14,6 +14,7 @@ export GKE_SERVICE_ACCOUNT="webapp1-serviceaccount"
 export GKE_DEPLOYMENT_NAME="webapp1-deployment"
 export MANIFESTS_DIR="deploy/manifests/webapp"
 export APP_DIR="../../../webapp/"
+export GKE_NAMESPACE="web"
 
 # Get a list of regions:
 # $ gcloud compute regions list
