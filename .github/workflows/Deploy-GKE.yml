@@ -1,0 +1,76 @@
+name: Deploy-GKE
+
+on: [workflow_dispatch]
+
+env:
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: webapp1-demo-cluster
+  GKE_APP_NAME: webapp1-demo-shop
+  GKE_SERVICE: xyz-service
+  GKE_SERVICE_ACCOUNT: webapp1-serviceaccount
+  GKE_DEPLOYMENT_NAME: webapp1-deployment
+  GKE_REGION: us-east4
+  GKE_ZONE: us-east4-a
+  GKE_ADDITIONAL_ZONE: us-east4-b
+  GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
+  GKE_SA_EMAIL: ${{ secrets.GKE_SA_EMAIL }}
+  APP_VERSION: ${{ github.sha }}
+  MANIFESTS_DIR: ../../gcp/gke/deploy/manifests/webapp
+  APP_DIR: ../../../webapp
+  
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@v0.6.0
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+        export_default_credentials: true 
+
+    # Build the Docker image
+    - name: Build and Push
+      working-directory:  ${{ env.APP_DIR }}
+      run: |-  
+        docker build \
+          --tag "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          .
+        gcloud auth configure-docker $GKE_REGION-docker.pkg.dev --quiet
+        docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"     
+
+  Deploy:
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: Build
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@v0.6.0
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+        export_default_credentials: true 
+
+    # Get the GKE credentials so we can deploy to the cluster
+    - uses: google-github-actions/get-gke-credentials@v0.5.0
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
+        credentials: ${{ secrets.GKE_SA_KEY }}
+
+    # Deploy the new Docker image to the GKE cluster
+    - name: Deploy
+      working-directory: ${{env.MANIFESTS_DIR}}
+      run: |-
+        envsubst < Service.yml | kubectl apply -f -
+        envsubst < Deployment.yml | kubectl apply -f -
