@@ -76,6 +76,10 @@ jobs:
     - name: Deploy
       working-directory: ${{env.MANIFESTS_DIR}}
       run: |-
-        envsubst < webns.yaml | kubectl apply -f -
         envsubst < Service.yaml | kubectl apply -f -
         envsubst < Deployment.yaml | kubectl apply -f -
+    
+    #envsubst < webns.yaml | kubectl apply -f -  #
+    #Name: "web", Namespace: ""
+    #from server for: "STDIN": namespaces "web" is forbidden: User "webapp1-serviceaccount@***.iam.gserviceaccount.com" cannot get resource "namespaces" in API group "" in the namespace "web": requires one of ["container.namespaces.get"] permission(s).
+    #Error: Process completed with exit code 1.
