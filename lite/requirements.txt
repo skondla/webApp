@@ -1,0 +1,8 @@
+flask
+flask-restful
+PyYAML==5.4.1
+html
+jsonlib
+requests
+boto3
+setuptools
