@@ -19,13 +19,9 @@ env:
   GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
   GKE_SA_EMAIL: ${{ secrets.GKE_SA_EMAIL }}
   APP_VERSION: ${{ github.sha }}
-  MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
-  APP_DIR: .
-  GKE_SVC_MAIL: webapp1-serviceaccount@${{ secrets.GKE_PROJECT }}.iam.gserviceaccount.com
-  GKE_APP_PORT: 25443
+  MANIFESTS_DIR: ../../gcp/gke/deploy/manifests/webapp
+  APP_DIR: ../../../webapp
   
-
-
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -49,7 +45,7 @@ jobs:
           --tag "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          .
+          ${{ env.APP_DIR }}
         gcloud auth configure-docker $GKE_REGION-docker.pkg.dev --quiet
         docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"     
 
@@ -90,10 +86,12 @@ jobs:
         kubectl get pods -o wide
         kubectl get svc -o wide
     
-    #Check application is running
+    #Check application is running, test REST endpoints
     - name: Deploy
       run: |-
-        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status        
+        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
+        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
+        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete        
     #envsubst < webns.yaml | kubectl apply -f -  #
     #Name: "web", Namespace: ""
     #from server for: "STDIN": namespaces "web" is forbidden: User "webapp1-serviceaccount@***.iam.gserviceaccount.com" cannot get resource "namespaces" in API group "" in the namespace "web": requires one of ["container.namespaces.get"] permission(s).
