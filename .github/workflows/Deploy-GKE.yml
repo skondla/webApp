@@ -18,7 +18,7 @@ env:
   GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
   GKE_SA_EMAIL: ${{ secrets.GKE_SA_EMAIL }}
   APP_VERSION: ${{ github.sha }}
-  MANIFESTS_DIR: ../../gcp/gke/deploy/manifests/webapp
+  MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp/
   APP_DIR: .
 
 jobs:
