@@ -5,7 +5,8 @@ metadata:
   name: $GKE_APP_NAME
   namespace: $GKE_NAMESPACE
 spec:
-  replicas: 1
+  serviceAccountName: $GKE_SERVICE_ACCOUNT
+  replicas: 2
   selector:
     matchLabels:
       app: $GKE_APP_NAME

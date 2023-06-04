@@ -4,6 +4,7 @@ metadata:
   name: $GKE_SERVICE
   namespace: $GKE_NAMESPACE
 spec:
+  serviceAccountName: $GKE_SERVICE_ACCOUNT
   type: LoadBalancer
   selector:
     app: $GKE_APP_NAME
