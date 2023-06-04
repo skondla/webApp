@@ -129,6 +129,6 @@ if __name__ == '__main__':
    #app.run(debug=True)	
    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
    context.load_cert_chain(certificate,key)	
-   #app.run(debug=True)	
-   app.run(host=hostname, port=port, debug=True,ssl_context=(context),threaded=True)
+   app.run(host=hostname, port=port, ssl_context=(context),threaded=True) 
+   #app.run(host=hostname, port=port, debug=True,ssl_context=(context),threaded=True)
    #app.run(host=hostname, port=port, debug=True,threaded=True)
