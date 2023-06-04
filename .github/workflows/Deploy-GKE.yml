@@ -21,6 +21,7 @@ env:
   APP_VERSION: ${{ github.sha }}
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
   APP_DIR: .
+  GKE_SVC_MAIL: webapp1-serviceaccount@${{ secrets.GKE_PROJECT }}.iam.gserviceaccount.com
   
 
 
@@ -74,6 +75,12 @@ jobs:
         location: ${{ env.GKE_ZONE }}
         credentials: ${{ secrets.GKE_SA_KEY }}
 
+    #To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole 
+    # Deploy the new Docker image to the GKE cluster
+    - name: Deploy
+      working-directory: ${{env.MANIFESTS_DIR}}
+      run: |-
+        kubectl create clusterrolebinding ${{env.GKE_SERVICE_ACCOUNT}}   --clusterrole cluster-admin   --user ${{env.GKE_SVC_MAIL}}
     # Deploy the new Docker image to the GKE cluster
     - name: Deploy
       working-directory: ${{env.MANIFESTS_DIR}}
