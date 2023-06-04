@@ -122,6 +122,12 @@ if [ $? -ne 0 ]; then
 else
   brew link --force gettext 
 fi
+
+##########
+kubectl create clusterrolebinding $GKE_SERVICE_ACCOUNT \
+  --clusterrole cluster-admin \
+  --user $GKE_SVC_MAIL
+##########
 # Create deployment
 envsubst < ${MANIFESTS_DIR}/Deployment.yaml | kubectl apply -f -
 
