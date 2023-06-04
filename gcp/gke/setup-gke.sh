@@ -14,7 +14,7 @@ export GKE_SERVICE_ACCOUNT="webapp1-serviceaccount"
 export GKE_DEPLOYMENT_NAME="webapp1-deployment"
 export MANIFESTS_DIR="deploy/manifests/webapp"
 export APP_DIR="../../app1/"
-export GKE_NAMESPACE="web"
+export GKE_NAMESPACE="webapp1"
 export GKE_APP_PORT="25443"
 
 # Get a list of regions:
@@ -90,7 +90,7 @@ gcloud iam service-accounts create $GKE_SERVICE_ACCOUNT \
 # Get mail of service account
 gcloud iam service-accounts list
 
-GKE_SVC_MAIL="$GKE_SERVICE_ACCOUNT@$GKE_PROJECT.iam.gserviceaccount.com"
+export GKE_SVC_MAIL="$GKE_SERVICE_ACCOUNT@$GKE_PROJECT.iam.gserviceaccount.com"
 
 # Add 'container.clusterAdmin' role:
 gcloud projects add-iam-policy-binding $GKE_PROJECT \

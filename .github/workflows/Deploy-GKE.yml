@@ -11,7 +11,7 @@ env:
   GKE_APP_NAME: webapp1-demo-shop
   GKE_SERVICE: webapp1-service
   GKE_SERVICE_ACCOUNT: webapp1-serviceaccount
-  GKE_NAMESPACE: web-ns
+  GKE_NAMESPACE: webapp1-namespace
   GKE_DEPLOYMENT_NAME: webapp1-deployment
   GKE_REGION: us-east4
   GKE_ZONE: us-east4-a
@@ -81,10 +81,12 @@ jobs:
     - name: Deploy
       working-directory: ${{env.MANIFESTS_DIR}}
       run: |-
+        envsubst < webapp1.yaml | kubectl apply -f -
         envsubst < Service.yaml | kubectl apply -f -
         envsubst < Deployment.yaml | kubectl apply -f -
         kubectl get pods -o wide
         kubectl get svc -o wide
+        sleep 60
     
     #Check application is running, test REST endpoints
     - name: Deploy
