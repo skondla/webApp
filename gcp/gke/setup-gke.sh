@@ -124,6 +124,7 @@ else
 fi
 
 ##########
+#To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole binding
 kubectl create clusterrolebinding $GKE_SERVICE_ACCOUNT \
   --clusterrole cluster-admin \
   --user $GKE_SVC_MAIL
