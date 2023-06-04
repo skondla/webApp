@@ -20,6 +20,7 @@ env:
   APP_VERSION: ${{ github.sha }}
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
   APP_DIR: .
+  GKE_NAMESPACE: web
 
 jobs:
   Build:
@@ -73,7 +74,7 @@ jobs:
 
     # Deploy the new Docker image to the GKE cluster
     - name: Deploy
-      working-directory: gcp/gke/deploy/manifests/webapp
+      working-directory: ${{env.MANIFESTS_DIR}}
       run: |-
-        envsubst < Service.yml | kubectl apply -f -
-        envsubst < Deployment.yml | kubectl apply -f -
+        envsubst < Service.yaml | kubectl apply -f -
+        envsubst < Deployment.yaml | kubectl apply -f -
