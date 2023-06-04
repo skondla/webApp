@@ -21,7 +21,7 @@ env:
   APP_VERSION: ${{ github.sha }}
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
   APP_DIR: .
-  
+  GKE_APP_PORT: 25443
 jobs:
   Build:
     runs-on: ubuntu-latest
