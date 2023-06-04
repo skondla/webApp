@@ -76,7 +76,7 @@ jobs:
         location: ${{ env.GKE_ZONE }}
         credentials: ${{ secrets.GKE_SA_KEY }}
 
-    #To be tested why this is needed: give the Google Service Acccount cluster-admin clusterrole permissions 
+    #To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole permissions 
     #- name: Deploy
     #  working-directory: ${{env.MANIFESTS_DIR}}
     #  run: |-
