@@ -9,7 +9,7 @@ env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: webapp1-demo-cluster
   GKE_APP_NAME: webapp1-demo-shop
-  GKE_SERVICE: xyz-service
+  GKE_SERVICE: webapp1-service
   GKE_SERVICE_ACCOUNT: webapp1-serviceaccount
   GKE_DEPLOYMENT_NAME: webapp1-deployment
   GKE_REGION: us-east4
@@ -76,5 +76,6 @@ jobs:
     - name: Deploy
       working-directory: ${{env.MANIFESTS_DIR}}
       run: |-
+        envsubst < webns.yaml | kubectl apply -f -
         envsubst < Service.yaml | kubectl apply -f -
         envsubst < Deployment.yaml | kubectl apply -f -
