@@ -13,7 +13,7 @@ export GKE_SERVICE="webapp1-service"
 export GKE_SERVICE_ACCOUNT="webapp1-serviceaccount"
 export GKE_DEPLOYMENT_NAME="webapp1-deployment"
 export MANIFESTS_DIR="deploy/manifests/webapp"
-export APP_DIR="../../../webapp/"
+export APP_DIR="../../app1/"
 export GKE_NAMESPACE="web"
 export GKE_APP_PORT="25443"
 

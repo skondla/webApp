@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: $GKE_APP_NAME
-#  namespace: $GKE_NAMESPACE
+  namespace: $GKE_NAMESPACE
 spec:
   replicas: 1
   selector:
