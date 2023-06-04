@@ -15,6 +15,7 @@ export GKE_DEPLOYMENT_NAME="webapp1-deployment"
 export MANIFESTS_DIR="deploy/manifests/webapp"
 export APP_DIR="../../../webapp/"
 export GKE_NAMESPACE="web"
+export GKE_APP_PORT="25443"
 
 # Get a list of regions:
 # $ gcloud compute regions list
@@ -125,15 +126,24 @@ fi
 
 ##########
 #To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole binding
-kubectl create clusterrolebinding $GKE_SERVICE_ACCOUNT \
-  --clusterrole cluster-admin \
-  --user $GKE_SVC_MAIL
+export check=`kubectl get clusterrolebinding | grep $GKE_SERVICE_ACCOUNT`
+if [ $? -ne 0 ]; then
+  kubectl create clusterrolebinding $GKE_SERVICE_ACCOUNT \
+   --clusterrole cluster-admin \
+   --user $GKE_SVC_MAIL
+else
+  echo "clusterrolebinding $GKE_SERVICE_ACCOUNT already exists"
+  echo "${check}"
+fi
 ##########
 # Create deployment
 envsubst < ${MANIFESTS_DIR}/Deployment.yaml | kubectl apply -f -
 
 # Create service
 envsubst < ${MANIFESTS_DIR}/Service.yaml | kubectl apply -f -
+
+#Check application is running
+curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/status
 
 kubectl get service
 echo ""

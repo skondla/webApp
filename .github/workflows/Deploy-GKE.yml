@@ -22,6 +22,7 @@ env:
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
   APP_DIR: .
   GKE_SVC_MAIL: webapp1-serviceaccount@${{ secrets.GKE_PROJECT }}.iam.gserviceaccount.com
+  GKE_APP_PORT: 25443
   
 
 
@@ -86,7 +87,13 @@ jobs:
       run: |-
         envsubst < Service.yaml | kubectl apply -f -
         envsubst < Deployment.yaml | kubectl apply -f -
+        kubectl get pods -o wide
+        kubectl get svc -o wide
     
+    #Check application is running
+    - name: Deploy
+      run: |-
+        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status        
     #envsubst < webns.yaml | kubectl apply -f -  #
     #Name: "web", Namespace: ""
     #from server for: "STDIN": namespaces "web" is forbidden: User "webapp1-serviceaccount@***.iam.gserviceaccount.com" cannot get resource "namespaces" in API group "" in the namespace "web": requires one of ["container.namespaces.get"] permission(s).
