@@ -142,8 +142,10 @@ envsubst < ${MANIFESTS_DIR}/Deployment.yaml | kubectl apply -f -
 # Create service
 envsubst < ${MANIFESTS_DIR}/Service.yaml | kubectl apply -f -
 
-#Check application is running
+#Check application is running, test application REST endpioints
 curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/status
+curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/create
+curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/delete
 
 kubectl get service
 echo ""
