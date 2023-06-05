@@ -14,7 +14,7 @@ export GKE_SERVICE_ACCOUNT="webapp1-serviceaccount"
 export GKE_DEPLOYMENT_NAME="webapp1-deployment"
 export MANIFESTS_DIR="deploy/manifests/webapp"
 export APP_DIR="../../app1/"
-export GKE_NAMESPACE="webapp1"
+export GKE_NAMESPACE="webapp1-namespace"
 export GKE_APP_PORT="25443"
 
 # Get a list of regions:
@@ -143,9 +143,9 @@ envsubst < ${MANIFESTS_DIR}/Deployment.yaml | kubectl apply -f -
 envsubst < ${MANIFESTS_DIR}/Service.yaml | kubectl apply -f -
 
 #Check application is running, test application REST endpioints
-curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/status
-curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/create
-curl -Lk https://`kubectl get svc | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/delete
+curl -Lk https://`kubectl get svc -n $GKE_NAMESPACE | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/status
+curl -Lk https://`kubectl get svc -n $GKE_NAMESPACE | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/create
+curl -Lk https://`kubectl get svc -n $GKE_NAMESPACE | grep $GKE_SERVICE | awk '{print $4}'`:$GKE_APP_PORT/backup/delete
 
 kubectl get service
 echo ""

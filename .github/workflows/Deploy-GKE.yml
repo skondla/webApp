@@ -91,9 +91,9 @@ jobs:
     #Check application is running, test REST endpoints
     - name: Deploy
       run: |-
-        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
-        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
-        curl -Lk https://`kubectl get svc | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete        
+        curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
+        curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
+        curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete        
     #envsubst < webns.yaml | kubectl apply -f -  #
     #Name: "web", Namespace: ""
     #from server for: "STDIN": namespaces "web" is forbidden: User "webapp1-serviceaccount@***.iam.gserviceaccount.com" cannot get resource "namespaces" in API group "" in the namespace "web": requires one of ["container.namespaces.get"] permission(s).
