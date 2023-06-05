@@ -18,7 +18,7 @@ name: Pyre
 on:
   workflow_dispatch:
   push:
-    branches: [ "master" ]
+    branches: [ "master","testing_gcp" ]
   pull_request:
     branches: [ "master" ]
 
@@ -43,4 +43,4 @@ jobs:
           # To customize these inputs:
           # See https://github.com/facebook/pyre-action#inputs
           repo-directory: './'
-          requirements-path: 'requirements.txt'
+          requirements-path: 'app1/requirements.txt'
