@@ -1,0 +1,50 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: myimages08102020.azurecr.io
+        username: ${{ secrets.acr_myimages08102020_username }}
+        password: ${{ secrets.acr_myimages08102020_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/" -f  "Dockerfile" -t myimages08102020.azurecr.io/aks:${{ github.sha }}
+        docker push myimages08102020.azurecr.io/aks:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_aks_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep aks2a71 | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace aks2a71`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: aks2a71
+        container-registry-url: myimages08102020.azurecr.io
+        container-registry-username: ${{ secrets.acr_myimages08102020_username }}
+        container-registry-password: ${{ secrets.acr_myimages08102020_password }}
+        secret-name: aksdockerauth
+       
+    - uses: azure/k8s-deploy@v1
+      with:
+        namespace: aks2a71
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          myimages08102020.azurecr.io/aks:${{ github.sha }}
+        imagepullsecrets: |
+          aksdockerauth

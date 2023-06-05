@@ -1,0 +1,8 @@
+flask
+flask-restful
+PyYAML==5.1.1
+requests
+boto3
+botocore
+boto
+
