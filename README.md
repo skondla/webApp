@@ -6,15 +6,15 @@
 ## Setup Instructions:
 
     $ python3 -V
-    Python 3.8.5
+    Python 3.9.13
     $ pip install -r requirements.txt --user
     #find where to copy libraries - for example
     $ python3 -c "import sys; print(sys.path)"
     output: 
-    ['', '/Users/skondla/miniconda3/lib/python38.zip', '/Users/skondla/miniconda3/lib/python3.8', '/Users/skondla/miniconda3/lib/python3.8/lib-dynload', '/Users/skondla/miniconda3/lib/python3.8/site-packages']
+    ['', '/Users/skondla/miniconda3/lib/python39.zip', '/Users/skondla/miniconda3/lib/python3.9', '/Users/skondla/miniconda3/lib/python3.9/lib-dynload', '/Users/skondla/miniconda3/lib/python3.9/site-packages']
 
 ## Alternatively cp files in lib directory to common python libriary (check version) 
-    sudo cp lib/rdsAdmin.py /Users/skondla/miniconda3/lib/python3.8
+    sudo cp lib/rdsAdmin.py /Users/skondla/miniconda3/lib/python3.9
 
 ## Change appConfig.yaml hostname and port matching your host IP
 ## scheduled to run in cron
