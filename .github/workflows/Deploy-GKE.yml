@@ -54,15 +54,15 @@ jobs:
       with:
         image-ref: '${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}'
         format: 'table'
-        #exit-code: '1'
+        #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'  
     #Upload Scan results to Github Code Scanning
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: 'trivy-results.sarif'  
+    #- name: Upload Trivy scan results to GitHub Security tab
+    #  uses: github/codeql-action/upload-sarif@v2
+    #  with:
+    #    sarif_file: 'trivy-results.sarif'  
   Deploy:
     runs-on: ubuntu-latest
     environment: prod
