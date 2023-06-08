@@ -1,7 +1,7 @@
 FROM python:3.9.13
 LABEL maintainer="Sudheer Kondla, skondla@me.com"
 #RUN apt-get -y install python3-pip
-RUN mkdir /app
+RUN mkdir -p /app/certs
 WORKDIR /app
 COPY . /app
 RUN groupadd -r app &&\
