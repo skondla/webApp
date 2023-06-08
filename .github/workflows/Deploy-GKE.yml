@@ -37,18 +37,32 @@ jobs:
         project_id: ${{ secrets.GKE_PROJECT }}
         export_default_credentials: true 
 
-    # Build the Docker image
-    - name: Build and Push
+    # Build the Docker image and Scan it
+    - name: Build, Scan and Push
       working-directory:  ${{ env.APP_DIR }}
       run: |-  
         docker build \
-          --tag "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA" \
+          --tag "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           .
-        gcloud auth configure-docker $GKE_REGION-docker.pkg.dev --quiet
-        docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"     
-
+        gcloud auth configure-docker ${{env.GKE_REGION}}-docker.pkg.dev --quiet
+        docker push "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}"    
+    #Image scan with Aqua Trivy     
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}'
+        format: 'table'
+        #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'  
+    #Upload Scan results to Github Code Scanning
+    #- name: Upload Trivy scan results to GitHub Security tab
+    #  uses: github/codeql-action/upload-sarif@v2
+    #  with:
+    #    sarif_file: 'trivy-results.sarif'  
   Deploy:
     runs-on: ubuntu-latest
     environment: prod
@@ -72,7 +86,7 @@ jobs:
         location: ${{ env.GKE_ZONE }}
         credentials: ${{ secrets.GKE_SA_KEY }}
 
-    #To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole permissions 
+    #To be tested why this is needed: give the Google Service Acccount cluster-admin clusterrole permissions 
     #- name: Deploy
     #  working-directory: ${{env.MANIFESTS_DIR}}
     #  run: |-
@@ -89,8 +103,21 @@ jobs:
         sleep 60
     
     #Check application is running, test REST endpoints
-    - name: Deploy
+    - name: Verify Coontainer Application
       run: |-
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete
+    
+    #Notify Slack
+    - name: Notify Slack
+      uses: ravsamhq/notify-slack-action@v2
+      if: always()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CI_HOOK }}
+      with:
+        status: ${{ job.status }}
+        notification_title: "{workflow}:{job} has {status_message}"
+        message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
+        footer: "Logs <{run_url}|{job}>"
+        notify_when: "failure,success"      
