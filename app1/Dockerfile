@@ -1,5 +1,5 @@
 FROM python:3.9.13
-LABEL maintainer="Sudheer Kondla, skondla@me.com"
+LABEL maintainer="Sam Kondla, skondla@me.com"
 #RUN apt-get -y install python3-pip
 RUN mkdir -p /app/certs
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN apt-get update && \
     openssl rsa -passin pass:x -in server.pass.key -out key.pem && \
     rm server.pass.key && \
     openssl req -new -key key.pem -out server.csr \
-        -subj "/C=US/ST=CA/L=Irvine/O=XYZ Inc/OU=IT Department/CN=www.xyzinc.com" && \
+        -subj "/C=US/ST=GA/L=Atlanta/O=Data Cube Inc/OU=IT Department/CN=www.datacubeinc.com" && \
     openssl x509 -req -days 365 -in server.csr -signkey key.pem -out certificate.pem
 RUN apt-get install -y libzmq3-dev python3-pip
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
