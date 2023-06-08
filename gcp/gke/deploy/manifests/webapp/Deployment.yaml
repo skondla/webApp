@@ -5,7 +5,7 @@ metadata:
   name: $GKE_APP_NAME
   namespace: $GKE_NAMESPACE
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: $GKE_APP_NAME

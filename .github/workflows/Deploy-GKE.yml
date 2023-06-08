@@ -72,7 +72,7 @@ jobs:
         location: ${{ env.GKE_ZONE }}
         credentials: ${{ secrets.GKE_SA_KEY }}
 
-    #To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole permissions 
+    #To be tested why this is needed: give the Google Service Acccount cluster-admin clusterrole permissions 
     #- name: Deploy
     #  working-directory: ${{env.MANIFESTS_DIR}}
     #  run: |-
@@ -94,3 +94,16 @@ jobs:
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete
+    
+    #Notify Slack
+    - name: Notify Slack
+      uses: ravsamhq/notify-slack-action@v2
+      if: always()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CI_HOOK }}
+      with:
+        status: ${{ job.status }}
+        notification_title: "{workflow}:{job} has {status_message}"
+        message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
+        footer: "Logs <{run_url}|{job}>"
+        notify_when: "failure,success"      
