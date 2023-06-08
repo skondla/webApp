@@ -94,6 +94,7 @@ jobs:
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete        
+<<<<<<< HEAD
 
     - name: Notify Slack
       uses: ravsamhq/notify-slack-action@v2
@@ -106,3 +107,9 @@ jobs:
         message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
         footer: "Logs <{run_url}|{job}>"
         notify_when: "failure,success"    
+=======
+    #envsubst < webns.yaml | kubectl apply -f -  #
+    #Name: "web", Namespace: ""
+    #from server for: "STDIN": namespaces "web" is forbidden: User "webapp1-serviceaccount@***.iam.gserviceaccount.com" cannot get resource "namespaces" in API group "" in the namespace "web": requires one of ["container.namespaces.get"] permission(s).
+    #Error: Process completed with exit code 1.
+>>>>>>> 845d64a056d2a6cfbeb4ee75b6cf9b870e7c4931
