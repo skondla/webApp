@@ -8,6 +8,7 @@ RUN groupadd -r app &&\
     useradd -r -g app -d /home/app -s /sbin/nologin -c "Docker image user" app
 #RUN pip3 install --upgrade setuptools pip
 RUN apt-get update
+RUN apt-get install -y openssl 
 RUN apt-get install -y libzmq3-dev python3-pip
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --upgrade pip
