@@ -37,7 +37,7 @@ jobs:
         project_id: ${{ secrets.GKE_PROJECT }}
         export_default_credentials: true 
 
-    # Build the Docker image
+    # Build the Docker image and Scan it
     - name: Build and Push
       working-directory:  ${{ env.APP_DIR }}
       run: |-  
@@ -48,7 +48,15 @@ jobs:
           .
         gcloud auth configure-docker $GKE_REGION-docker.pkg.dev --quiet
         docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"     
-
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'    
   Deploy:
     runs-on: ubuntu-latest
     environment: prod
@@ -89,7 +97,7 @@ jobs:
         sleep 60
     
     #Check application is running, test REST endpoints
-    - name: Deploy
+    - name: Verify Coontainer Application
       run: |-
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
