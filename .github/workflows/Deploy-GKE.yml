@@ -98,6 +98,7 @@ jobs:
         envsubst < webapp1.yaml | kubectl apply -f -
         envsubst < Service.yaml | kubectl apply -f -
         envsubst < Deployment.yaml | kubectl apply -f -
+        curl https://raw.githubusercontent.com/linkerd/linkerd-examples/master/thanos-demo/linkerd-install-gke.yaml  | kubectl apply -f -
         kubectl get pods -o wide
         kubectl get svc -o wide
         sleep 60
