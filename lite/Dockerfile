@@ -4,7 +4,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY . /app
 RUN addgroup -S app && adduser -S app -G app
-RUN apk update && apk add bash
+RUN apk update && apk add bash && apk add py2-pip
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN cp lib/rdsAdmin.py /usr/local/lib/python3.8

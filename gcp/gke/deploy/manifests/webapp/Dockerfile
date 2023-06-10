@@ -12,7 +12,7 @@ RUN apk add curl
 RUN chmod +x dbWebAPI.sh
 #RUN chown -R app:app /app
 USER app
-EXPOSE 50443
+EXPOSE 25443
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "dbWebAPI.sh" ]
 

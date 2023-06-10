@@ -2,18 +2,12 @@
 #Author: skondla@me.com
 #purpose: Build a simple python WebApp & REST API to call database service requests
 #coding=utf-8
-from flask import Flask, request, render_template, jsonify, Response
+from flask import Flask, request, render_template, jsonify, Response, escape
 from flask_restful import reqparse, abort, Api, Resource
 from rdsAdmin import RDSDescribe, RDSCreate, RDSDelete
-import boto3
 import sys
-import json
-import requests
-import html
 import datetime
-import time
 import yaml
-import os
 import ssl
 
 sys.path.append('/app/')
@@ -44,7 +38,8 @@ def create_backup():
     print(str(requestDBSnapshot))
     endPoint = __dbEndPoint__ 
     snapStatus = snapshotStaus(snapshotName,endPoint) 
-    return "Snapshot: " + str(snapshotName) + " requested is successfully submitted \n\n db endpoint: " + endPoint + '\n\n Snapshot Status: ' + str(snapStatus), 202
+    return "Snapshot: " + str(escape(snapshotName)) + " requested is successfully submitted \n\n db endpoint: " + escape(endPoint) + '\n\n Snapshot Status: ' + \
+        str(escape(snapStatus)), 202
 
 @app.route('/backup/status')
 def backup_check():
@@ -71,7 +66,8 @@ def delete_post():
     endPoint = request.form['endpoint']
     endPoint = endPoint.strip()
     deleteSnapshot(snapshotName,endPoint)
-    return "Snapshot: " + snapshotName + " deleting...."
+    return "Snapshot: " + escape(snapshotName) + " deleting...."
+    #return "Snapshot: " + snapshotName + " deleting...."
 
 @app.route('/data')
 def names():
@@ -129,6 +125,6 @@ if __name__ == '__main__':
    #app.run(debug=True)	
    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
    context.load_cert_chain(certificate,key)	
-   #app.run(debug=True)	
-   app.run(host=hostname, port=port, debug=True,ssl_context=(context),threaded=True)
+   app.run(host=hostname, port=port, ssl_context=(context),threaded=True) 
+   #app.run(host=hostname, port=port, debug=True,ssl_context=(context),threaded=True)
    #app.run(host=hostname, port=port, debug=True,threaded=True)

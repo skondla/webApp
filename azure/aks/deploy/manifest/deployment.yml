@@ -1,0 +1,16 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: "aks-e9e9"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "aks-e9e9"
+    spec:
+      containers:
+        - name: "aks-e9e9"
+          image: "myimages08102020.azurecr.io/aks"
+          ports:
+          - containerPort: 25443

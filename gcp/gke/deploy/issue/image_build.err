@@ -1,0 +1,30 @@
+created key [95d4065e9d89909bf9e829f4d03b23d765a24e9c] of type [json] as [key.json] for [webapp1-serviceaccount@igneous-spanner-385916.iam.gserviceaccount.com]
+[+] Building 8.5s (10/15)
+ => [internal] load .dockerignore                                                                                                                                                                                                        0.0s
+ => => transferring context: 2B                                                                                                                                                                                                          0.0s
+ => [internal] load build definition from Dockerfile                                                                                                                                                                                     0.0s
+ => => transferring dockerfile: 506B                                                                                                                                                                                                     0.0s
+ => [internal] load metadata for docker.io/library/python:3.8.3-alpine                                                                                                                                                                   6.4s
+ => [ 1/11] FROM docker.io/library/python:3.8.3-alpine@sha256:c5623df482648cacece4f9652a0ae04b51576c93773ccd43ad459e2a195906dd                                                                                                           0.0s
+ => [internal] load build context                                                                                                                                                                                                        0.0s
+ => => transferring context: 11.53kB                                                                                                                                                                                                     0.0s
+ => CACHED [ 2/11] RUN mkdir /app                                                                                                                                                                                                        0.0s
+ => CACHED [ 3/11] WORKDIR /app                                                                                                                                                                                                          0.0s
+ => [ 4/11] COPY . /app                                                                                                                                                                                                                  0.1s
+ => [ 5/11] RUN addgroup -S app && adduser -S app -G app                                                                                                                                                                                 0.5s
+ => ERROR [ 6/11] RUN apk update && apk add bash && apk add py2-pip                                                                                                                                                                      1.4s
+------
+ > [ 6/11] RUN apk update && apk add bash && apk add py2-pip:
+#0 0.386 fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/main/x86_64/APKINDEX.tar.gz
+#0 0.570 fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.gz
+#0 0.827 v3.12.12-45-g8116a127ec [http://dl-cdn.alpinelinux.org/alpine/v3.12/main]
+#0 0.827 v3.12.12-46-g1df69604c4 [http://dl-cdn.alpinelinux.org/alpine/v3.12/community]
+#0 0.827 OK: 12783 distinct packages available
+#0 1.014 (1/1) Installing bash (5.0.17-r0)
+#0 1.081 Executing bash-5.0.17-r0.post-install
+#0 1.086 Executing busybox-1.31.1-r16.trigger
+#0 1.125 OK: 12 MiB in 36 packages
+#0 1.319 ERROR: unsatisfiable constraints:
+#0 1.319   py2-pip (missing):
+#0 1.345     required by: world[py2-pip]
+------
