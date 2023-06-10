@@ -13,8 +13,9 @@ export PATH=$PATH:$HOME/.linkerd2/bin
 linkerd version
 linkerd install | kubectl apply -f -
 linkerd check
-linkerd dashboard
+#linkerd dashboard
 linkerd stat deployments -n linkerd
 linkerd stat deployments -n emojivoto
+linkerd stat deployments -n webapp1-namespace
 kubectl get deployments -n emojivoto -o yaml | linkerd inject - | kubectl apply -f -
 kubectl get deployments -n webapp1-namespace -o yaml | linkerd inject - | kubectl apply -f -
