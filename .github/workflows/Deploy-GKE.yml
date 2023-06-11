@@ -20,6 +20,7 @@ env:
   GKE_SA_EMAIL: ${{ secrets.GKE_SA_EMAIL }}
   APP_VERSION: ${{ github.sha }}
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
+  SERVICE_MESH_DIR: gcp/gke/deploy/serviceMesh
   APP_DIR: app1
   GKE_APP_PORT: 25443
 jobs:
@@ -58,6 +59,19 @@ jobs:
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'  
+    # Install helm
+    - name: Install Helm
+      run: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+    # Install Linkerd
+    #- name: Install Linkerd
+    #  run: |
+    #    curl -sL https://run.linkerd.io/install | sh
+    #    export PATH=$PATH:$HOME/.linkerd2/bin
+    #    linkerd check --pre
+    #    linkerd install | kubectl apply -f -
+    #    linkerd check
+      
     #Upload Scan results to Github Code Scanning
     #- name: Upload Trivy scan results to GitHub Security tab
     #  uses: github/codeql-action/upload-sarif@v2
@@ -99,9 +113,12 @@ jobs:
         envsubst < Service.yaml | kubectl apply -f -
         envsubst < Deployment.yaml | kubectl apply -f -
         kubectl get pods -o wide
-        kubectl get svc -o wide
+        kubectl get svc -o wide 
         sleep 60
-    
+    #   curl https://raw.githubusercontent.com/linkerd/linkerd-examples/master/thanos-demo/linkerd-install-gke.yaml  | kubectl apply -f -
+    #   envsubst <  ../../serviceMesh/linkerd-install-gke.yaml | kubectl apply -f - 
+    #   envsubst <  ../../serviceMesh/linkerd-install-gke.yaml | kubectl apply -f - 
+    #   bash serviceMesh/setup_linkerd.sh
     #Check application is running, test REST endpoints
     - name: Verify Coontainer Application
       run: |-

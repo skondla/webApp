@@ -6,7 +6,7 @@
 # See https://console.cloud.google.com/projectselector2/home/dashboard
 
 # Set parameters
-export GKE_PROJECT="igneous-spanner-385916"
+export GKE_PROJECT=${GCP_PROJECT_ID} #env variable from  ~/.secrets
 export GKE_CLUSTER="webapp1-demo-cluster"
 export GKE_APP_NAME="webapp1-demo-shop"
 export GKE_SERVICE="webapp1-service"
@@ -16,6 +16,7 @@ export MANIFESTS_DIR="deploy/manifests/webapp"
 export APP_DIR="../../app1/"
 export GKE_NAMESPACE="webapp1-namespace"
 export GKE_APP_PORT="25443"
+export MEMBERSHIP_NAME="webapp1-membership"
 
 # Get a list of regions:
 # $ gcloud compute regions list
@@ -157,3 +158,19 @@ echo "Please create a secret named 'GKE_SA_KEY' in GitHub with the followign con
 echo ""
 cat ~/.private/key.json | base64
 echo ""
+
+
+##Setup anthos 
+#Registering a GKE cluster using Workload Identity (recommended)
+
+gcloud container fleet memberships register ${MEMBERSHIP_NAME} \
+ --gke-cluster=${GKE_CLUSTER} \
+ --enable-workload-identity
+
+#Registering a GKE cluster using a Service Account
+
+gcloud container fleet memberships register ${MEMBERSHIP_NAME} \
+ --gke-cluster=${GKE_CLUSTER} \
+ --service-account-key-file=~/.private/key.json \
+ --install-connect-agent
+
