@@ -20,6 +20,7 @@ env:
   GKE_SA_EMAIL: ${{ secrets.GKE_SA_EMAIL }}
   APP_VERSION: ${{ github.sha }}
   MANIFESTS_DIR: gcp/gke/deploy/manifests/webapp
+  SERVICE_MESH_DIR: gcp/gke/deploy/serviceMesh
   APP_DIR: app1
   GKE_APP_PORT: 25443
 jobs:
@@ -113,6 +114,7 @@ jobs:
         envsubst < Deployment.yaml | kubectl apply -f -
         kubectl get pods -o wide
         kubectl get svc -o wide 
+        envsubst <  ${{env.SERVICE_MESH_DIR}}/linkerd-install-gke.yaml | kubectl apply -f - 
         sleep 60
     #   curl https://raw.githubusercontent.com/linkerd/linkerd-examples/master/thanos-demo/linkerd-install-gke.yaml  | kubectl apply -f -
     #   envsubst <  serviceMesh/linkerd-install-gke.yaml | kubectl apply -f -  
