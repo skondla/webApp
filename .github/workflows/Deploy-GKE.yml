@@ -114,11 +114,10 @@ jobs:
         envsubst < Deployment.yaml | kubectl apply -f -
         kubectl get pods -o wide
         kubectl get svc -o wide 
-        envsubst <  ../../serviceMesh/linkerd-install-gke.yaml | kubectl apply -f - 
         sleep 60
     #   curl https://raw.githubusercontent.com/linkerd/linkerd-examples/master/thanos-demo/linkerd-install-gke.yaml  | kubectl apply -f -
     #   envsubst <  ../../serviceMesh/linkerd-install-gke.yaml | kubectl apply -f - 
-    #   envsubst <  serviceMesh/linkerd-install-gke.yaml | kubectl apply -f - 
+    #   envsubst <  ../../serviceMesh/linkerd-install-gke.yaml | kubectl apply -f - 
     #   bash serviceMesh/setup_linkerd.sh
     #Check application is running, test REST endpoints
     - name: Verify Coontainer Application
