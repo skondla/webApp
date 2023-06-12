@@ -103,14 +103,14 @@ gcloud projects add-iam-policy-binding $GKE_PROJECT \
   --role=roles/artifactregistry.admin
 
 # Download JSON
-gcloud iam service-accounts keys create ~/.private/key.json --iam-account=$GKE_SVC_MAIL
+gcloud iam service-accounts keys create ~/.private/webapp_key.json --iam-account=$GKE_SVC_MAIL
 
 # Build and push the docker image
 docker build --tag \
-  "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA" \
+  "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA" \
   ${APP_DIR}/
 gcloud auth configure-docker $GKE_REGION-docker.pkg.dev --quiet
-docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"
+docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"
 
 #Check envsubst is configured correctly (this example is on MacOS only)
 which gettext
@@ -155,5 +155,5 @@ echo ""
 echo ""
 echo "Please create a secret named 'GKE_SA_KEY' in GitHub with the followign content:"
 echo ""
-cat ~/.private/key.json | base64
+cat ~/.private/webapp_key.json | base64
 echo ""

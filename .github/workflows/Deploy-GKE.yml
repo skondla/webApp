@@ -25,7 +25,7 @@ env:
   GKE_APP_PORT: 25443
   GITHUB_SHA: ${{ github.sha }}
 jobs:
-  Build:
+  Checkout:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,7 +40,7 @@ jobs:
         export_default_credentials: true 
         
   Test:
-    needs: [Build]
+    needs: [Checkout]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -52,7 +52,7 @@ jobs:
           hostname -f
 
   # Build the Docker image
-  ImageBuild:
+  Build:
     needs: [Test] 
     runs-on: ubuntu-latest
     steps:
@@ -61,21 +61,21 @@ jobs:
       working-directory:  ${{ env.APP_DIR }}
       run: |-  
         docker build \
-          --tag "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}" \
+          --tag "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           .
         gcloud auth configure-docker ${{env.GKE_REGION}}-docker.pkg.dev --quiet
-        docker push "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}"    
+        docker push "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}"    
   #Image scan with Aqua Trivy     
   Scan:
-    needs: [ImageBuild]
+    needs: [Build]
     runs-on: ubuntu-latest
     steps:    
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: '${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}'
+        image-ref: '${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}'
         format: 'table'
         #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
         ignore-unfixed: true
