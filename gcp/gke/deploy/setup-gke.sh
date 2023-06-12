@@ -6,14 +6,15 @@
 # See https://console.cloud.google.com/projectselector2/home/dashboard
 
 # Set parameters
+source ~/.bash_profile
 export GKE_PROJECT=${GCP_PROJECT_ID} #env variable from  ~/.secrets
 export GKE_CLUSTER="webapp1-demo-cluster"
 export GKE_APP_NAME="webapp1-demo-shop"
 export GKE_SERVICE="webapp1-service"
 export GKE_SERVICE_ACCOUNT="webapp1-serviceaccount"
 export GKE_DEPLOYMENT_NAME="webapp1-deployment"
-export MANIFESTS_DIR="deploy/manifests/webapp"
-export APP_DIR="../../app1/"
+export MANIFESTS_DIR="manifests/webapp"
+export APP_DIR="../../../app1/"
 export GKE_NAMESPACE="webapp1-namespace"
 export GKE_APP_PORT="25443"
 
@@ -28,7 +29,7 @@ export GKE_ADDITIONAL_ZONE="us-east4-b"
 
 
 # Just a placeholder for the first deployment
-export GITHUB_SHA="webapp1-demo-shop"
+export GITHUB_SHA=${GKE_APP_NAME}
 
 #Login to gcloud
 gcloud auth login
@@ -103,13 +104,14 @@ gcloud projects add-iam-policy-binding $GKE_PROJECT \
   --role=roles/artifactregistry.admin
 
 # Download JSON
-gcloud iam service-accounts keys create ~/.private/key.json --iam-account=$GKE_SVC_MAIL
+gcloud iam service-accounts keys create ~/.private/webapp_key.json --iam-account=$GKE_SVC_MAIL
 
 # Build and push the docker image
 docker build --tag \
   "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA" \
   ${APP_DIR}/
 gcloud auth configure-docker $GKE_REGION-docker.pkg.dev --quiet
+gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://$GKE_REGION-docker.pkg.dev
 docker push "$GKE_REGION-docker.pkg.dev/$GKE_PROJECT/$GKE_PROJECT/$GKE_APP_NAME:$GITHUB_SHA"
 
 #Check envsubst is configured correctly (this example is on MacOS only)
@@ -125,7 +127,7 @@ else
 fi
 
 ##########
-#To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole binding
+#To be tested why this is needed: give the Google Service Acccount cluster-admin clusterrole binding
 export check=`kubectl get clusterrolebinding | grep $GKE_SERVICE_ACCOUNT | awk '{print $1}' | wc -l`
 if [ ${check} -le 1 ]; then
   kubectl create clusterrolebinding $GKE_SERVICE_ACCOUNT \
@@ -136,6 +138,8 @@ else
   echo "${check}"
 fi
 ##########
+#Create namespace and service account
+envsubst < ${MANIFESTS_DIR}/webapp1.yaml | kubectl apply -f -
 # Create deployment
 envsubst < ${MANIFESTS_DIR}/Deployment.yaml | kubectl apply -f -
 
@@ -155,5 +159,5 @@ echo ""
 echo ""
 echo "Please create a secret named 'GKE_SA_KEY' in GitHub with the followign content:"
 echo ""
-cat ~/.private/key.json | base64
+cat ~/.private/webapp_key.json | base64
 echo ""

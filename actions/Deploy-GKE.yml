@@ -25,7 +25,7 @@ env:
   GKE_APP_PORT: 25443
   GITHUB_SHA: ${{ github.sha }}
 jobs:
-  Checkout:
+  Build:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,30 +38,8 @@ jobs:
         service_account_key: ${{ secrets.GKE_SA_KEY }}
         project_id: ${{ secrets.GKE_PROJECT }}
         export_default_credentials: true 
-        
-  Test:
-    needs: [Checkout]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Test Application
-        working-directory:  ${{ env.APP_DIR }}
-        run: |-  
-          echo "Testing Application, Not complete yet"
-          uname -a
-          hostname -f
 
-  # Build the Docker image
-  Build:
-    needs: [Test] 
-    runs-on: ubuntu-latest
-    steps:
-    - uses: google-github-actions/setup-gcloud@v0.6.0
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: ${{ secrets.GKE_PROJECT }}
-        export_default_credentials: true   
-    - uses: actions/checkout@v3  
+    # Build the Docker image and Scan it
     - name: Build, Scan and Push
       working-directory:  ${{ env.APP_DIR }}
       run: |-  
@@ -72,16 +50,7 @@ jobs:
           .
         gcloud auth configure-docker ${{env.GKE_REGION}}-docker.pkg.dev --quiet
         docker push "${{env.GKE_REGION}}-docker.pkg.dev/${{env.GKE_PROJECT}}/${{env.GKE_PROJECT}}/${{env.GKE_APP_NAME}}:${{env.APP_VERSION}}"    
-  #Image scan with Aqua Trivy     
-  Scan:
-    needs: [Build]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: google-github-actions/setup-gcloud@v0.6.0
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: ${{ secrets.GKE_PROJECT }}
-        export_default_credentials: true       
+    #Image scan with Aqua Trivy     
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
@@ -110,9 +79,10 @@ jobs:
     #  with:
     #    sarif_file: 'trivy-results.sarif'  
   Deploy:
-    needs: [Scan]
     runs-on: ubuntu-latest
-    environment: production
+    environment: prod
+    needs: Build
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
