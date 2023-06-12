@@ -56,6 +56,11 @@ jobs:
     needs: [Test] 
     runs-on: ubuntu-latest
     steps:
+    - uses: google-github-actions/setup-gcloud@v0.6.0
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+        export_default_credentials: true   
     - uses: actions/checkout@v3  
     - name: Build, Scan and Push
       working-directory:  ${{ env.APP_DIR }}
@@ -71,7 +76,12 @@ jobs:
   Scan:
     needs: [Build]
     runs-on: ubuntu-latest
-    steps:    
+    steps:
+    - uses: google-github-actions/setup-gcloud@v0.6.0
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+        export_default_credentials: true       
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
