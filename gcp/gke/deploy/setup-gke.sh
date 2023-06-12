@@ -125,7 +125,7 @@ else
 fi
 
 ##########
-#To be test why this is needed: give the Google Service Acccount cluster-admin clusterrole binding
+#To be tested why this is needed: give the Google Service Acccount cluster-admin clusterrole binding
 export check=`kubectl get clusterrolebinding | grep $GKE_SERVICE_ACCOUNT | awk '{print $1}' | wc -l`
 if [ ${check} -le 1 ]; then
   kubectl create clusterrolebinding $GKE_SERVICE_ACCOUNT \
