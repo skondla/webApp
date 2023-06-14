@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #Author: skondla@me.com
 #Purpose: Create a new instance of EKS cluster and deploy a container web application
@@ -13,16 +12,15 @@ export AWS_ACCESS_KEY_ID=`cat ~/.aws/credentials|grep aws_access_key_id | awk '{
 export AWS_SECRET_ACCESS_KEY=`cat ~/.aws/credentials|grep aws_secret_access_key | awk '{print $3}'`
 export ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 #export IMAGE_TAG=$(git rev-parse --long HEAD | grep -v long)
-export IMAGE_TAG=$(openssl rand -hex 32)
+export IMAGE_TAG=`cat ~/Downloads/ecr_image.txt  | grep imageTag | awk '{print $2}'`
 
-#Create EKS cluster
-eksctl create cluster \
---name webapp1-demo-shop \
---version 1.17 \
---region ${AWS_REGION} \
---nodegroup-name standard-workers \
---node-type t3.medium \
---nodes 3 \
---nodes-min 1 \
---nodes-max 4 \
---managed
+
+aws ecr batch-delete-image \
+ --repository-name ${ECR_REPOSITORY} \
+ --image-ids imageTag=${IMAGE_TAG} \
+ --region ${AWS_REGION}
+
+aws ecr delete-repository \
+ --repository-name ${ECR_REPOSITORY} \
+ --force \
+ --region ${AWS_REGION}

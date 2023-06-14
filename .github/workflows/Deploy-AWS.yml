@@ -15,6 +15,7 @@ env:
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
   AWS_APP_PORT: 25443
   GITHUB_SHA: ${{ github.sha }}
+  
 
 jobs:
   Build:
@@ -82,3 +83,16 @@ jobs:
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+      
+      #Notify Slack
+      - name: Notify Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CI_HOOK }}
+        with:
+          status: ${{ job.status }}
+          notification_title: "{workflow}:{job} has {status_message}"
+          message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Logs <{run_url}|{job}>"
+          notify_when: "failure,success"       
