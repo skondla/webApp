@@ -35,11 +35,11 @@
     #create cluster db snapshot
   
     curl -k https://10.10.x.x:25443/backup/create \
-<<<<<<< HEAD
+
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
 =======
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
->>>>>>> 077ae213dd36eb896811417f29ca8d36bece3383
+
     echo
   
     !<---(https://10.10.x.x:25443/backup/create)-->
@@ -48,11 +48,11 @@
   
     curl -k https://10.10.x.x:25443/backup/status \
     --data "snapshotname=ecomm-integ-postgresdb-aurora-snapshot-2019-06-23-22-21-57" \
-<<<<<<< HEAD
+
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
 =======
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
->>>>>>> 077ae213dd36eb896811417f29ca8d36bece3383
+
     echo
   
     #https://10.10.x.x:25443/backup/status
@@ -61,11 +61,11 @@
   
     curl -k https://10.10.x.x:25443/backup/delete \
     --data "snapshotname=ecomm-integ-postgresdb-aurora-snapshot-2019-06-23-22-21-57" \
-<<<<<<< HEAD
+
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
 =======
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
->>>>>>> 077ae213dd36eb896811417f29ca8d36bece3383
+
     echo
   
     #https://10.10.x.x:25443/backup/delete
