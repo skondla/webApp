@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-backup-tool
+  namespace: $GKE_NAMESPACE
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbwebapi
+  template:
+    metadata:
+      labels:
+        app: dbwebapi
+    spec:
+      containers:
+      - name: dbwebapi
+        image: skondla/dbwebapi:dbwebapi
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 50443
