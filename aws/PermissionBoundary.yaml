@@ -1,0 +1,60 @@
+CloudFormationRole:
+  Type: "AWS::IAM::Role"
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        Effect: Allow
+        Principal:
+          Service: !Sub "cloudformation.${AWS::URLSuffix}"
+        Action: "sts:AssumeRole"
+        Condition:
+          StringEquals:
+            "aws:SourceAccount": !Ref "AWS::AccountId"
+    Description: !Sub "DO NOT DELETE - Used by CloudFormation. Created by CloudFormation ${AWS::StackId}"
+    ManagedPolicyArns:
+      - !Sub "arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess"
+    PermissionsBoundary: !Ref DeveloperBoundary
+    RoleName: CloudFormationRole
+
+DeveloperBoundary:
+  Type: "AWS::IAM::ManagedPolicy"
+  Properties:
+    Description: Permission boundary for developers
+    ManagedPolicyName: PermissionsBoundary
+    PolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Sid: AllowModifyIamRolesWithBoundary
+          Effect: Allow
+          Action:
+            - "iam:AttachRolePolicy"
+            - "iam:CreateRole"
+            - "iam:DeleteRolePolicy"
+            - "iam:DetachRolePolicy"
+            - "iam:PutRolePermissionsBoundary"
+            - "iam:PutRolePolicy"
+          Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/app/*"
+          Condition:
+            ArnEquals:
+              "iam:PermissionsBoundary": !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/PermissionsBoundary"
+        - Sid: AllowModifyIamRoles
+          Effect: Allow
+          Action:
+            - "iam:DeleteRole"
+            - "iam:TagRole"
+            - "iam:UntagRole"
+            - "iam:UpdateAssumeRolePolicy"
+            - "iam:UpdateRole"
+            - "iam:UpdateRoleDescription"
+          Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/app/*"
+        - Sid: OverlyPermissiveAllowedServices
+          Effect: Allow
+          Action:
+            - "lambda:*"
+            - "apigateway:*"
+            - "events:*"
+            - "s3:*"
+            - "logs:*"
+          Resource: "*"
+

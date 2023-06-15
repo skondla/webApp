@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $GKE_NAMESPACE
+  labels:
+    name: $GKE_NAMESPACE
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkerd
+  labels:
+    name: linkerd
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: $GKE_SERVICE_ACCOUNT
+  namespace: $GKE_NAMESPACE
+
