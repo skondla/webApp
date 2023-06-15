@@ -129,7 +129,7 @@ aws ecs register-task-definition --cli-input-json file://task_definition.json
 
 aws ecs list-task-definitions
 
-
+aws ecs describe-task-definition --task-definition webapp1-demo-shop --query taskDefinition > ${APP_DIR}/task_definition.json
 
 
 

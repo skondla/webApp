@@ -1,0 +1,33 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:635125955082:task-definition/webapp1-demo-shop:1",
+    "containerDefinitions": [
+        {
+            "name": "webapp1-demo-shop",
+            "image": "webapp1-demo-shop",
+            "cpu": 10,
+            "memory": 500,
+            "portMappings": [
+                {
+                    "containerPort": 25443,
+                    "hostPort": 25443,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": []
+        }
+    ],
+    "family": "webapp1-demo-shop",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "placementConstraints": [],
+    "compatibilities": [
+        "EXTERNAL",
+        "EC2"
+    ],
+    "registeredAt": "2023-06-14T20:48:47.653000-04:00",
+    "registeredBy": "arn:aws:iam::635125955082:user/skondla"
+}

@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: webapp1-demo-shop
   ECS_SERVICE: webapp1-demo-shop-service
   ECS_CLUSTER: default
-  ECS_TASK_DEFINITION: app1/aws-task-definition.json
+  ECS_TASK_DEFINITION: app1/task_definition.json
   CONTAINER_NAME: webapp1-demo-shop
   APP_DIR: app1
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
@@ -74,7 +74,8 @@ jobs:
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.GITHUB_SHA}}
+          image: ${{ needs.Build.outputs.image }}
+#          image: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.GITHUB_SHA}}
 #          image: ${{ needs.Build.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
