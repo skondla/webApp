@@ -2,7 +2,7 @@ name: Deploy-AWS WebApp
 
 on:
   push:
-    branches: [ "testing_gws", "master" ]
+    branches: [ "testing_aws", "master" ]
 
 env:
   AWS_REGION: us-east-1
