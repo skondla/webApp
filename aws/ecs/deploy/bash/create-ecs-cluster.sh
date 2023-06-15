@@ -153,3 +153,14 @@ aws ecs describe-task-definition --task-definition webapp1-demo-shop --query tas
 
 
 
+#Create ECS Service
+
+aws ecs create-service \
+    --cluster webapp1-demo-shop \
+    --service-name webapp1-demo-shop-service \
+    --task-definition webapp1-demo-shop-2:1 \
+    --desired-count 2 \
+    --launch-type FARGATE \
+    --platform-version LATEST \
+    --network-configuration "awsvpcConfiguration={subnets=[subnet-0d526810628ef562f,subnet-062352c184a30488c,subnet-0cae3194b32ba0b38],securityGroups=[sg-0e4f9b540b09e1968],assignPublicIp=ENABLED}" \
+    --tags key=key1,value=value1 key=key2,value=value2 key=key3,value=value3
