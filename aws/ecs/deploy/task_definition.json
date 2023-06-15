@@ -1,0 +1,18 @@
+{
+    "family": "webapp1-demo-shop",
+    "containerDefinitions": [
+        {
+            "name": "webapp1-demo-shop",
+            "image": "webapp1-demo-shop",
+            "cpu": 10,
+            "memory": 500,
+            "portMappings": [
+                {
+                    "containerPort": 25443,
+                    "hostPort": 25443
+                }
+            ],
+            "essential": true
+        }
+    ]
+}
