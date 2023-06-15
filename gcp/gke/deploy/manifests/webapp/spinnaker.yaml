@@ -1,6 +1,0 @@
-# spinnaker-service-account.yml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: spinnaker-service-account
-  namespace: $GKE_NAMESPACE
