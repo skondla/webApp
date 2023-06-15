@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: webapp1-demo-shop
   ECS_SERVICE: webapp1-demo-shop-service
   ECS_CLUSTER: default
-  ECS_TASK_DEFINITION: app1/aws-task-definition.json
+#  ECS_TASK_DEFINITION: app1/aws-task-definition.json
   CONTAINER_NAME: webapp1-demo-shop
   APP_DIR: app1
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
@@ -68,15 +68,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition webapp1-demo-shop --query taskDefinition > task_definition.json
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          task-definition: task_definition.json
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ needs.Build.outputs.image }}
-#          image: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.GITHUB_SHA}}
-#          image: ${{ needs.Build.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
