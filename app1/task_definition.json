@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "webapp1-demo-shop",
-            "image": "webapp1-demo-shop",
+            "image": "635125955082.dkr.ecr.us-east-1.amazonaws.com/webapp1-demo-shop:e11d0afa1db5ce0fe9d8669b3d84c9dede4c73f3",
             "cpu": 10,
             "memory": 500,
             "portMappings": [
