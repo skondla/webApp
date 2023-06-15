@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $GKE_NAMESPACE
+  labels:
+    name: $GKE_NAMESPACE
+---
+
+# webapp-service-account.yml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: $GKE_SERVICE_ACCOUNT
+  namespace: $GKE_NAMESPACE
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: $GKE_NAMESPACE
+  name: pod-reader
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: $GKE_NAMESPACE
+  name: pod-admin
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods","services","configmaps","secrets","deployments","replicasets","statefulsets","daemonsets","jobs","cronjobs"]
+  verbs: ["get", "watch", "list", "delete", "patch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: secret-reader
+rules:
+- apiGroups: [""]
+  #
+  # at the HTTP level, the name of the resource for accessing Secret
+  # objects is "secrets"
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+  
+---
+# $GKE_SERVICE_ACCOUNT-clusterrolebinding.yml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: webapp-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: $GKE_SERVICE_ACCOUNT
+  namespace: $GKE_NAMESPACE
+
+---
+
+# webapp-role-and-rolebinding-target.yml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: webapp-role
+  namespace: target # Should be namespace you are granting access to
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webapp-rolebinding
+  namespace: target # Should be namespace you are granting access to
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: webapp-role # Should match name of Role
+subjects:
+- namespace: source # Should match namespace where SA lives
+  kind: ServiceAccount
+  name: $GKE_SERVICE_ACCOUNT # Should match service account name, above

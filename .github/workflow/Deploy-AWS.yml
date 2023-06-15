@@ -1,0 +1,100 @@
+name: Deploy-AWS WebApp
+
+on:
+  push:
+    branches: [ "testing_aws", "master" ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: webapp1-demo-shop
+  ECS_SERVICE: webapp1-demo-shop-service
+  ECS_CLUSTER: default
+  ECS_TASK_DEFINITION: app1/aws-task-definition.json
+  CONTAINER_NAME: webapp1-demo-shop
+  APP_DIR: app1
+  AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+  AWS_APP_PORT: 25443
+  GITHUB_SHA: ${{ github.sha }}
+  
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          mask-aws-account-id: no
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: ${{env.APP_DIR}}
+        run: |
+          imagename=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "Build and push $imagename"
+          docker build -t $imagename .
+          docker push $imagename
+          echo "image=$imagename" >> $GITHUB_OUTPUT
+
+  Deploy:
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: Build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ needs.Build.outputs.image }}
+#          image: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.GITHUB_SHA}}
+#          image: ${{ needs.Build.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+      
+      #Notify Slack
+      - name: Notify Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CI_HOOK }}
+        with:
+          status: ${{ job.status }}
+          notification_title: "{workflow}:{job} has {status_message}"
+          message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Logs <{run_url}|{job}>"
+          notify_when: "failure,success"       

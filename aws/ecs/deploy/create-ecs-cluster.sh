@@ -125,6 +125,26 @@ cat <<EOF > task_definition.json
 }
 EOF
 
+cat <<EOF > ecs-tasks-trust-policy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+aws iam create-role \
+ --role-name ecsTaskExecutionRole \
+ --assume-role-policy-document file://ecs-tasks-trust-policy.json
+
 aws ecs register-task-definition --cli-input-json file://task_definition.json
 
 aws ecs list-task-definitions
