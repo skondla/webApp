@@ -95,6 +95,13 @@ jobs:
       #   with:
       #     args: rollout status deployment/my-app
       
+      #Configure kubectl
+      - name: Configure kubectl
+        run: |
+          echo ${{ secrets.KUBE_CONFIG_DATA }} | base64 --decode > kubeconfig.yaml
+          mkdir -p ~/.kube
+          mv kubeconfig.yaml ~/.kube/config
+      #Deploy application  
       - name: Deploy
         working-directory: ${{env.MANIFESTS_DIR}}
         run: |-
