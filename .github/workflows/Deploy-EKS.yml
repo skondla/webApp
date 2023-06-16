@@ -13,7 +13,7 @@ env:
   CONTAINER_NAME: webapp1-demo-shop
   EKS_APP_NAME: webapp1-demo-shop
   EKS_SERVICE: webapp1
-  EKS_SERVICE_ACCOUNT: webapp1-sa
+  EKS_SERVICE_ACCOUNT: webapp-sa1
   EKS_NAMESPACE: webapp
   EKS_DEPLOYMENT_NAME: webapp1-deployment
   APP_DIR: app1
@@ -21,7 +21,7 @@ env:
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
   AWS_APP_PORT: "25443"
   GITHUB_SHA: ${{ github.sha }}
-  IMAGE_NAME: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${secrets.AWS_REGION}.amazonaws.com/webapp1-demo-shop:${{github.sha}}
+  IMAGE_NAME: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/webapp1-demo-shop:${{github.sha}}
   
   
 
