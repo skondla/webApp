@@ -9,13 +9,20 @@ env:
   AWS_REGION: ${{secrets.AWS_REGION}}
   ECR_REPOSITORY: webapp1-demo-shop
   ECR_REGISTRY: ${secrets.AWS_ACCOUNT_ID}.dkr.ecr.${secrets.AWS_REGION}.amazonaws.com"
-  ECS_SERVICE: webapp1-demo-shop-service
   EKS_CLUSTER_NAME: webapp1-demo-shop-2
   CONTAINER_NAME: webapp1-demo-shop
+  EKS_APP_NAME: webapp1-demo-shop
+  EKS_SERVICE: webapp1
+  EKS_SERVICE_ACCOUNT: webapp-sa1
+  EKS_NAMESPACE: webapp
+  EKS_DEPLOYMENT_NAME: webapp1-deployment
   APP_DIR: app1
+  MANIFESTS_DIR: aws/eks/deploy/manifest/webapp1
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
-  AWS_APP_PORT: 25443
+  AWS_APP_PORT: "25443"
   GITHUB_SHA: ${{ github.sha }}
+  IMAGE_NAME: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/webapp1-demo-shop:${{github.sha}}
+  
   
 
 jobs:
@@ -55,7 +62,7 @@ jobs:
 
   Deploy:
     runs-on: ubuntu-latest
-    environment: prod
+    environment: staging
     needs: Build
 
     steps:
@@ -64,6 +71,9 @@ jobs:
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          IMAGE_NAME: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.GITHUB_SHA}}
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -71,24 +81,31 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-
-
-      - name: deploy to cluster
-        uses: kodermax/kubectl-aws-eks@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}}
-          IMAGE_TAG: ${{ env.GITHUB_SHA }}
-        with:
-          args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        
-      - name: verify deployment
-        uses: kodermax/kubectl-aws-eks@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-        args: rollout status deployment/my-app
+      
+      #Configure kubectl
+      - name: Configure kubectl
+        run: |
+          echo ${{ secrets.KUBE_CONFIG_DATA }} | base64 --decode > kubeconfig.yaml
+          mkdir -p ~/.kube
+          mv kubeconfig.yaml ~/.kube/config
+      #Deploy application  
+      - name: Deploy
+        working-directory: ${{env.MANIFESTS_DIR}}
+        run: |-
+          envsubst < webapp1.yaml | kubectl apply -f -
+          envsubst < Service.yaml | kubectl apply -f -
+          envsubst < Deployment.yaml | kubectl apply -f -
+          kubectl get pods -o wide -n ${{env.EKS_NAMESPACE}}
+          kubectl get svc -o wide -n ${{env.EKS_NAMESPACE}}
+          sleep 90
+      
+      #Check application is running, test REST endpoints
+      - name: Verify Coontainer Application
+        run: |-
+          kubectl rollout status deploy ${{env.EKS_APP_NAME}} -n ${{env.EKS_NAMESPACE}}
+          curl -Lk https://`kubectl get svc -n ${{env.EKS_NAMESPACE}} | grep ${{env.EKS_SERVICE}} | awk '{print $4}'`:${{env.AWS_APP_PORT}}/backup/status 
+          curl -Lk https://`kubectl get svc -n ${{env.EKS_NAMESPACE}} | grep ${{env.EKS_SERVICE}} | awk '{print $4}'`:${{env.AWS_APP_PORT}}/backup/create 
+          curl -Lk https://`kubectl get svc -n ${{env.EKS_NAMESPACE}} | grep ${{env.EKS_SERVICE}} | awk '{print $4}'`:${{env.AWS_APP_PORT}}/backup/delete
 
       #Notify Slack
       - name: Notify Slack

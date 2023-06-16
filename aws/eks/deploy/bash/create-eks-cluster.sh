@@ -2,6 +2,9 @@
 #Author: skondla@me.com
 #Purpose: Install and Setup EKS cluster and deploy a container web application
 
+
+#Dependencies:
+  #Run this script after ../../../ecr/deploy/bash/setup-ecr.sh
 #enviroment variables
 
 export ECR_REPOSITORY="webapp1-demo-shop"
@@ -14,6 +17,14 @@ export AWS_SECRET_ACCESS_KEY=`cat ~/.aws/credentials|grep aws_secret_access_key 
 export ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 #export IMAGE_TAG=$(git rev-parse --long HEAD | grep -v long)
 export IMAGE_TAG=$(openssl rand -hex 32)
+export ECR_REPOSITORY_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+export EKS_APP_NAME="webapp1-demo-shop"
+export EKS_SERVICE="webapp1"
+export EKS_SERVICE_ACCOUNT="webapp1-sa"
+export EKS_NAMESPACE="webapp"
+export AWS_APP_PORT="25443"
+export IMAGE_NAME=`cat ~/Downloads/ecr_image.txt | grep imageName|awk '{print $2}'`
+export APP_MANIFEST_DIR="../manifest/webapp1"
 
 cat >eks-cluster-role-trust-policy.json <<EOF
 {
@@ -202,3 +213,9 @@ kubectl get svc
 
 #Provision Cluster
 #eksctl create cluster --config-file ./cr_eks.yaml
+
+#Deploy Application
+
+ envsubst < ${APP_MANIFEST_DIR}/webapp1.yaml | kubectl apply -f -
+ envsubst < ${APP_MANIFEST_DIR}/Service.yaml | kubectl apply -f -
+ envsubst < ${APP_MANIFEST_DIR}/Deployment.yaml | kubectl apply -f -
