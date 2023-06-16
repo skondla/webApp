@@ -1,0 +1,103 @@
+name: Deploy-AWS WebApp
+
+on:
+  push:
+    branches: [ "testing_aws", "master" ]
+
+env:
+  AWS_REGION: ${{secrets.AWS_REGION}}
+  ECR_REPOSITORY: webapp1-demo-shop
+  ECR_REGISTRY: ${secrets.AWS_ACCOUNT_ID}.dkr.ecr.${secrets.AWS_REGION}.amazonaws.com"
+  ECS_SERVICE: webapp1-demo-shop-service
+  EKS_CLUSTER_NAME: webapp1-demo-shop-2
+  CONTAINER_NAME: webapp1-demo-shop
+  APP_DIR: app1
+  AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+  AWS_APP_PORT: 25443
+  GITHUB_SHA: ${{ github.sha }}
+  
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          mask-aws-account-id: no
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ env.GITHUB_SHA }}
+        working-directory: ${{env.APP_DIR}}
+        run: |
+          imagename=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "Build and push $imagename"
+          docker build -t $imagename .
+          docker push $imagename
+          echo "image=$imagename" >> $GITHUB_OUTPUT
+
+  Deploy:
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: Build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+
+      - name: deploy to cluster
+        uses: kodermax/kubectl-aws-eks@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}}
+          IMAGE_TAG: ${{ env.GITHUB_SHA }}
+        with:
+          args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        
+      - name: verify deployment
+        uses: kodermax/kubectl-aws-eks@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+        args: rollout status deployment/my-app
+
+      #Notify Slack
+      - name: Notify Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CI_HOOK }}
+        with:
+          status: ${{ job.status }}
+          notification_title: "{workflow}:{job} has {status_message}"
+          message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Logs <{run_url}|{job}>"
+          notify_when: "failure,success"       
