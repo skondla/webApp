@@ -3,21 +3,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp1
-  namespace: webapp
+  name: ${EKS_APP_NAME}
+  namespace: ${NAMESPACE}
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: webapp1
+      app: ${EKS_APP_NAME}
   template:
     metadata:
       labels:
-        app: webapp1
+        app: ${EKS_APP_NAME}
     spec:
-      serviceAccountName: webapp
+      serviceAccountName: ${EKS_SERVICE_ACCOUNT}
       containers:
-      - name: webapp1
+      - name: ${EKS_APP_NAME}
         image: ${IMAGE_NAME}
         ports:
         - containerPort: 25443

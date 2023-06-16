@@ -1,20 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: webapp
+  name: ${EKS_NAMESPACE}
   labels:
-    name: webapp
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: linkerd
-  labels:
-    name: linkerd
+    name: ${EKS_NAMESPACE}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: webapp
-  namespace: webapp
+  name: ${EKS_SERVICE_ACCOUNT}
+  namespace: ${EKS_NAMESPACE}
 
