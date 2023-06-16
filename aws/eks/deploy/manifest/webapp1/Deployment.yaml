@@ -18,7 +18,7 @@ spec:
       serviceAccountName: webapp
       containers:
       - name: webapp1
-        image: 635125955082.dkr.ecr.us-east-1.amazonaws.com/webapp1-demo-shop:53c18b9bfd5836d3bfc58d07755266aa6d4220bdc0766c50930ef83b3a0409d1
+        image: ${IMAGE_NAME}
         ports:
         - containerPort: 25443
         env:
