@@ -4,7 +4,7 @@
 
 #enviroment variables
 
-export EKS_CLUSTER_NAME="webapp1-demo-shop"
+export EKS_CLUSTER_NAME="webapp1-demo-shop-2"
 export APP_DIR="../../../app1/"
 export AWS_ACCOUNT_ID=`cat ~/.secrets | grep 'AWS_ACCOUNT_ID' | awk '{print $2}'`
 export AWS_REGION=`cat ~/.aws/config | grep region | awk '{print $3}'`

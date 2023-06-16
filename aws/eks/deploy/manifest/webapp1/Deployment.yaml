@@ -1,0 +1,26 @@
+# This file configures the webapp1 app which serves public web traffic on port 80
+#export IMAGE_NAME=`cat ~/Downloads/ecr_image.txt | grep imageName|awk '{print $2}'`
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp1
+  namespace: webapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp1
+  template:
+    metadata:
+      labels:
+        app: webapp1
+    spec:
+      serviceAccountName: webapp
+      containers:
+      - name: webapp1
+        image: 635125955082.dkr.ecr.us-east-1.amazonaws.com/webapp1-demo-shop:53c18b9bfd5836d3bfc58d07755266aa6d4220bdc0766c50930ef83b3a0409d1
+        ports:
+        - containerPort: 25443
+        env:
+          - name: PORT
+            value: "25443"

@@ -14,30 +14,6 @@ export ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 #export IMAGE_TAG=$(git rev-parse --long HEAD | grep -v long)
 export IMAGE_TAG=$(openssl rand -hex 32)
 
-#Authenticate Docker to ECR
-aws ecr get-login-password \
- --region ${AWS_REGION} | docker login --username AWS \
- --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-
-#Cretate ECR repo
-aws ecr create-repository \
- --repository-name ${ECR_REPOSITORY} \
- --region ${AWS_REGION} \
- --image-scanning-configuration scanOnPush=true \
- --image-tag-mutability MUTABLE
-
-# Build and push the docker image
-imagename=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-echo "Build and push $imagename"
-docker build -t $imagename $APP_DIR
-
-#Push image to ECR
-docker push $imagename
-echo "imageName: $imagename" > ~/Downloads/ecr_image.txt
-echo "imageTag: $IMAGE_TAG" >> ~/Downloads/ecr_image.txt
-
-
 #Create ECS cluster
 # aws cloudformation create-stack \
 #  --stack-name webapp1-demo-shop \
