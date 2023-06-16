@@ -97,7 +97,7 @@ jobs:
           envsubst < Deployment.yaml | kubectl apply -f -
           kubectl get pods -o wide -n ${{env.EKS_NAMESPACE}}
           kubectl get svc -o wide -n ${{env.EKS_NAMESPACE}}
-          sleep 60
+          sleep 90
       
       #Check application is running, test REST endpoints
       - name: Verify Coontainer Application
