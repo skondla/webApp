@@ -21,6 +21,7 @@ env:
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
   AWS_APP_PORT: "25443"
   GITHUB_SHA: ${{ github.sha }}
+  IMAGE_NAME: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${secrets.AWS_REGION}.amazonaws.com/webapp1-demo-shop:${{github.sha}}
   
   
 
