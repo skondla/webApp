@@ -1,9 +1,9 @@
 name: Deploy-GKE
 
-on: [ workflow_dispatch ]
-#on:
-#  push:
-#    branches: [ "testing_gcp", "master" ]
+#on: [ workflow_dispatch ]
+on:
+  push:
+    branches: [ "testing_gcp", "master" ]
 
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}

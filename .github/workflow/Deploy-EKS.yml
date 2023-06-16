@@ -1,9 +1,9 @@
 name: Deploy-AWS WebApp
 
-on: [ workflow_dispatch ] 
-#on:
-#  push:
-#    branches: [ "testing_aws", "master" ]
+#on: [ workflow_dispatch ] 
+on:
+  push:
+    branches: [ "testing_aws", "master" ]
 
 env:
   AWS_REGION: ${{secrets.AWS_REGION}}
