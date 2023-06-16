@@ -101,13 +101,14 @@ jobs:
           envsubst < webapp1.yaml | kubectl apply -f -
           envsubst < Service.yaml | kubectl apply -f -
           envsubst < Deployment.yaml | kubectl apply -f -
-          kubectl get pods -o wide -n ${{env.EKS_NAMESPACE}}}
-          kubectl get svc -o wide -n ${{env.EKS_NAMESPACE}}}
+          kubectl get pods -o wide -n ${{env.EKS_NAMESPACE}}
+          kubectl get svc -o wide -n ${{env.EKS_NAMESPACE}}
           sleep 60
       
       #Check application is running, test REST endpoints
       - name: Verify Coontainer Application
         run: |-
+          kubectl rollout status deploy my-pod -n ${{env.EKS_NAMESPACE}}
           curl -Lk https://`kubectl get svc -n ${{env.EKS_NAMESPACE}} | grep ${{env.EKS_SERVICE}} | awk '{print $4}'`:${{env.AWS_APP_PORT}}/backup/status 
           curl -Lk https://`kubectl get svc -n ${{env.EKS_NAMESPACE}} | grep ${{env.EKS_SERVICE}} | awk '{print $4}'`:${{env.AWS_APP_PORT}}/backup/create 
           curl -Lk https://`kubectl get svc -n ${{env.EKS_NAMESPACE}} | grep ${{env.EKS_SERVICE}} | awk '{print $4}'`:${{env.AWS_APP_PORT}}/backup/delete
