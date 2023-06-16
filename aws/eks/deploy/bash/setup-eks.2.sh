@@ -21,8 +21,9 @@ eksctl create cluster \
 --version 1.17 \
 --region ${AWS_REGION} \
 --nodegroup-name standard-workers \
---node-type t3.medium \
+--node-type t3.micro \
 --nodes 3 \
 --nodes-min 1 \
 --nodes-max 4 \
---managed
+--managed 
+

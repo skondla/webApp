@@ -1,0 +1,73 @@
+(base) skondla@skondla1-Mac:bash $ eksctl create cluster \
+>  --name ${EKS_CLUSTER_NAME}-2 \
+>  --version 1.27 \
+>  --region ${AWS_REGION} \
+>  --nodegroup-name standard-workers \
+>  --node-type t3.micro \
+>  --nodes 3 \
+>  --nodes-min 1 \
+>  --nodes-max 4 \
+>  --managed \
+>    --ssh-public-key ~/.ssh/id_rsa.pub \
+>   --vpc-private-subnets=subnet-076afdef0f9911f16,subnet-001ae6deda7adaf15 \
+>   --vpc-public-subnets=subnet-065bbff8f2e547c0e,subnet-078382a4e4f2333da
+2023-06-15 23:48:08 [ℹ]  eksctl version 0.144.0
+2023-06-15 23:48:08 [ℹ]  using region us-east-1
+2023-06-15 23:48:09 [✔]  using existing VPC (vpc-04f3d99120aea6d96) and subnets (private:map[us-east-1a:{subnet-076afdef0f9911f16 us-east-1a 192.168.128.0/18 0 } us-east-1b:{subnet-001ae6deda7adaf15 us-east-1b 192.168.192.0/18 0 }] public:map[us-east-1a:{subnet-065bbff8f2e547c0e us-east-1a 192.168.0.0/18 0 } us-east-1b:{subnet-078382a4e4f2333da us-east-1b 192.168.64.0/18 0 }])
+2023-06-15 23:48:09 [!]  custom VPC/subnets will be used; if resulting cluster doesn't function as expected, make sure to review the configuration of VPC/subnets
+2023-06-15 23:48:09 [ℹ]  nodegroup "standard-workers" will use "" [AmazonLinux2/1.27]
+2023-06-15 23:48:09 [ℹ]  using Kubernetes version 1.27
+2023-06-15 23:48:09 [ℹ]  creating EKS cluster "webapp1-demo-shop-2" in "us-east-1" region with managed nodes
+2023-06-15 23:48:09 [ℹ]  will create 2 separate CloudFormation stacks for cluster itself and the initial managed nodegroup
+2023-06-15 23:48:09 [ℹ]  if you encounter any issues, check CloudFormation console or try 'eksctl utils describe-stacks --region=us-east-1 --cluster=webapp1-demo-shop-2'
+2023-06-15 23:48:09 [ℹ]  Kubernetes API endpoint access will use default of {publicAccess=true, privateAccess=false} for cluster "webapp1-demo-shop-2" in "us-east-1"
+2023-06-15 23:48:09 [ℹ]  CloudWatch logging will not be enabled for cluster "webapp1-demo-shop-2" in "us-east-1"
+2023-06-15 23:48:09 [ℹ]  you can enable it with 'eksctl utils update-cluster-logging --enable-types={SPECIFY-YOUR-LOG-TYPES-HERE (e.g. all)} --region=us-east-1 --cluster=webapp1-demo-shop-2'
+2023-06-15 23:48:09 [ℹ]
+2 sequential tasks: { create cluster control plane "webapp1-demo-shop-2",
+    2 sequential sub-tasks: {
+        wait for control plane to become ready,
+        create managed nodegroup "standard-workers",
+    }
+}
+2023-06-15 23:48:09 [ℹ]  building cluster stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:48:10 [ℹ]  deploying stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:48:40 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:49:10 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:50:10 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:51:10 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:52:11 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:53:11 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:54:11 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:55:11 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:56:11 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:57:11 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:58:12 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-15 23:59:12 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-16 00:00:12 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-cluster"
+2023-06-16 00:02:14 [ℹ]  building managed nodegroup stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:02:15 [ℹ]  deploying stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:02:15 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:02:46 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:03:32 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:04:23 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:04:56 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:06:20 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:06:56 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:07:57 [ℹ]  waiting for CloudFormation stack "eksctl-webapp1-demo-shop-2-nodegroup-standard-workers"
+2023-06-16 00:07:57 [ℹ]  waiting for the control plane to become ready
+2023-06-16 00:07:58 [✔]  saved kubeconfig as "/Users/skondla/.kube/config"
+2023-06-16 00:07:58 [ℹ]  no tasks
+2023-06-16 00:07:58 [✔]  all EKS cluster resources for "webapp1-demo-shop-2" have been created
+2023-06-16 00:07:58 [ℹ]  nodegroup "standard-workers" has 3 node(s)
+2023-06-16 00:07:58 [ℹ]  node "ip-192-168-102-106.ec2.internal" is ready
+2023-06-16 00:07:58 [ℹ]  node "ip-192-168-115-18.ec2.internal" is ready
+2023-06-16 00:07:58 [ℹ]  node "ip-192-168-57-91.ec2.internal" is ready
+2023-06-16 00:07:58 [ℹ]  waiting for at least 1 node(s) to become ready in "standard-workers"
+2023-06-16 00:07:58 [ℹ]  nodegroup "standard-workers" has 3 node(s)
+2023-06-16 00:07:58 [ℹ]  node "ip-192-168-102-106.ec2.internal" is ready
+2023-06-16 00:07:58 [ℹ]  node "ip-192-168-115-18.ec2.internal" is ready
+2023-06-16 00:07:58 [ℹ]  node "ip-192-168-57-91.ec2.internal" is ready
+2023-06-16 00:08:04 [ℹ]  kubectl command should work with "/Users/skondla/.kube/config", try 'kubectl get nodes'
+2023-06-16 00:08:04 [✔]  EKS cluster "webapp1-demo-shop-2" in "us-east-1" region is ready
+(base) skondla@skondla1-Mac:bash $

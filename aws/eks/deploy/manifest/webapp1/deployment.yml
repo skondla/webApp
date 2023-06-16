@@ -1,0 +1,18 @@
+#export IMAGE_NAME=`cat ~/Downloads/ecr_image.txt | grep imageName|awk '{print $2}'`
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "webapp1"
+  namespace: "webapp"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "webapp1"
+    spec:
+      containers:
+        - name: "webapp1"
+          image: "${IMAGE_NAME}"
+          ports:
+          - containerPort: 25443
