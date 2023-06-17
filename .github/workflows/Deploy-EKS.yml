@@ -23,8 +23,6 @@ env:
   GITHUB_SHA: ${{ github.sha }}
   IMAGE_NAME: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/webapp1-demo-shop:${{github.sha}}
   
-  
-
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -59,11 +57,32 @@ jobs:
           docker build -t $imagename .
           docker push $imagename
           echo "image=$imagename" >> $GITHUB_OUTPUT
+  
+  #Image scan with Aqua Trivy     
+  Scan:
+    needs: [Build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          mask-aws-account-id: no    
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/webapp1-demo-shop:${{github.sha}}'
+          format: 'table'
+          #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'  
 
   Deploy:
     runs-on: ubuntu-latest
-    environment: staging
-    needs: Build
+    environment: Staging
+    needs: [Scan]
 
     steps:
       - name: Checkout
