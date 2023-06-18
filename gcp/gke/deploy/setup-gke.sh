@@ -27,9 +27,9 @@ export GKE_REGION="us-east4"
 export GKE_ZONE="us-east4-a"
 export GKE_ADDITIONAL_ZONE="us-east4-b"
 
-
 # Just a placeholder for the first deployment
-export GITHUB_SHA=${GKE_APP_NAME}
+export IMAGE_TAG=$(openssl rand -hex 32)
+export GITHUB_SHA=${IMAGE_TAG}
 
 #Login to gcloud
 gcloud auth login

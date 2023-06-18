@@ -99,5 +99,12 @@ HTML interface example:
 
 ![Alt text](images/webApp.backups.png)
 
+## DevSecOps pipeline diagram
+
+![Alt text](images/DevSecOps_with_GutHub_Actions.png)
 # webApp
-#Contact: skondla@me.com
+# Contact: skondla@me.com
+## Blog
+
+[DevSecOps — Deploying WebApp on Google Cloud GKE cluster with Github Actions](https://medium.com/@kondlawork/devsecops-deploying-webapp-on-google-cloud-gke-cluster-with-github-actions-1028c0630dde)
+
