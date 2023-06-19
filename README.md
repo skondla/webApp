@@ -35,11 +35,8 @@
     #create cluster db snapshot
   
     curl -k https://10.10.x.x:25443/backup/create \
-
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
-=======
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
-
     echo
   
     !<---(https://10.10.x.x:25443/backup/create)-->
@@ -48,22 +45,16 @@
   
     curl -k https://10.10.x.x:25443/backup/status \
     --data "snapshotname=ecomm-integ-postgresdb-aurora-snapshot-2019-06-23-22-21-57" \
-
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
-=======
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
-
     echo
-  
     #https://10.10.x.x:25443/backup/status
 
     #delete cluster db snapshot
   
     curl -k https://10.10.x.x:25443/backup/delete \
     --data "snapshotname=ecomm-integ-postgresdb-aurora-snapshot-2019-06-23-22-21-57" \
-
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
-=======
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
 
     echo
@@ -102,8 +93,8 @@ HTML interface example:
 ## DevSecOps pipeline diagram
 
 ![Alt text](images/DevSecOps_with_GutHub_Actions.png)
-# webApp
-# Contact: skondla@me.com
+
+## Contact: skondla@me.com
 ## Blog
 
 [DevSecOps — Deploying WebApp on Google Cloud GKE cluster with Github Actions](https://medium.com/@kondlawork/devsecops-deploying-webapp-on-google-cloud-gke-cluster-with-github-actions-1028c0630dde)
