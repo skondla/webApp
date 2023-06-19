@@ -1,4 +1,4 @@
-name: Deploy-AWS WebApp
+name: Deploy WebApp to EKS Cluster
 
 #on: [ workflow_dispatch ] 
 on:
