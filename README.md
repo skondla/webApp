@@ -1,7 +1,8 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/skondla/webApp/blob/master/LICENSE)
-[![CI/CD](https://github.com/skondla/webapp/actions/workflows/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
-[![CI/CD](https://github.com/skondla/webapp/actions/workflows/GKE-Deploy.yml/badge.svg?branch=testing_gcp?event=push)](https://github.com/skondla/webApp/actions)
-[![CI/CD](https://github.com/skondla/webapp/actions/workdlows/GKE-Deploy.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
+[![CICD](https://github.com/skondla/webApp/actions/workdlows/Deploy-GKE.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions/workdlows/Deploy-GKE.yml)
+[![CICD](https://github.com/skondla/webapp/actions/workflows/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
+[![CICD](https://github.com/skondla/webapp/actions/workflows/GKE-Deploy.yml/badge.svg?branch=testing_gcp?event=push)](https://github.com/skondla/webApp/actions)
+
 
 # Introduction
     This source code is an example of taking an automatic on-demand backup of an RDS instance running in AWS VPC using AWS Python SDK (boto3). Alternatively 
