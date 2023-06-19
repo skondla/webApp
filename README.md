@@ -1,6 +1,5 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/skondla/webApp/blob/master/LICENSE)
-![Github Actions workflow](https://github.com/github/docs/actions/workflows/Deply-GKE.yml/badge.svg)
-![Github Actions workflow](https://github.com/github/docs/actions/workflows/Deply-EKS.yml/badge.svg)
+[![CI/CD](https://github.com/skondla/webapp/workflows/CI/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
 
 # Introduction
     This source code is an example of taking an automatic on-demand backup of an RDS instance running in AWS VPC using AWS Python SDK (boto3). Alternatively 
