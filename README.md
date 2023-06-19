@@ -1,6 +1,6 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/skondla/webApp/blob/master/LICENSE)
 [![CICD](https://github.com/skondla/webapp/actions/workflows/Deploy-GKE.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/skondla/webapp/GKE-Deploy.yml)
+
 
 
 
