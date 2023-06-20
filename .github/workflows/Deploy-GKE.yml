@@ -1,4 +1,4 @@
-name: Deploy-GKE
+name: Deploy webapp to GKE cluster
 
 #on: [ workflow_dispatch ]
 on:

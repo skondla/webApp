@@ -1,4 +1,4 @@
-name: Deploy-AWS WebApp
+name: Deploy WebApp to EKS Cluster
 
 #on: [ workflow_dispatch ] 
 on:
@@ -9,7 +9,7 @@ env:
   AWS_REGION: ${{secrets.AWS_REGION}}
   ECR_REPOSITORY: webapp1-demo-shop
   ECR_REGISTRY: ${secrets.AWS_ACCOUNT_ID}.dkr.ecr.${secrets.AWS_REGION}.amazonaws.com"
-  EKS_CLUSTER_NAME: webapp1-demo-shop-2
+  EKS_CLUSTER_NAME: webapps-demo
   CONTAINER_NAME: webapp1-demo-shop
   EKS_APP_NAME: webapp1-demo-shop
   EKS_SERVICE: webapp1

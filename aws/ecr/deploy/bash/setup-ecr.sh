@@ -35,5 +35,5 @@ docker build -t $imagename $APP_DIR
 
 #Push image to ECR
 docker push $imagename
-echo "imageName: $imagename" > ~/Downloads/ecr_image.txt
-echo "imageTag: $IMAGE_TAG" >> ~/Downloads/ecr_image.txt
+echo "imageName: $imagename" > ~/Downloads/webapp_ecr_image.txt
+echo "imageTag: $IMAGE_TAG" >> ~/Downloads/webapp_ecr_image.txt
