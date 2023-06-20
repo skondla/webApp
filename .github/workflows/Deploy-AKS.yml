@@ -31,7 +31,7 @@ name: Build and deploy an app to AKS
 
 on:
   push:
-    branches: [ "testing_azure" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 env:
