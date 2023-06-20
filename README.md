@@ -28,7 +28,7 @@
     
 ### How to Access webApp via HTTPS or CURL
 
-#### Main Page
+##### Main Page
 
 ##### https://10.10.x.x:25443/backup
 
@@ -92,8 +92,8 @@ HTML interface example:
 
 ![Alt text](images/DevSecOps_with_GutHub_Actions.png)
 
-#### Contact: skondla@me.com
-#### Blog
+###### Contact: skondla@me.com
+###### Blog
 
 [DevSecOps — Deploying WebApp on Google Cloud GKE cluster with Github Actions](https://medium.com/@kondlawork/devsecops-deploying-webapp-on-google-cloud-gke-cluster-with-github-actions-1028c0630dde)
 
