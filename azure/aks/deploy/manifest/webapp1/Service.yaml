@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${AKS_SERVICE}
+  namespace: ${AKS_NAMESPACE}
+spec:
+#  serviceAccountName: $GKE_SERVICE_ACCOUNT
+  type: LoadBalancer
+  selector:
+    app: ${AKS_APP_NAME}
+  ports:
+  - port: 25443
+    targetPort: 25443

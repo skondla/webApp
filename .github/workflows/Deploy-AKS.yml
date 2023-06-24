@@ -17,11 +17,11 @@
 #
 # 2. Set the following environment variables (or replace the values below):
 #    - AZURE_CONTAINER_REGISTRY (name of your container registry / ACR)
-#    - RESOURCE_GROUP (where your cluster is deployed)
-#    - CLUSTER_NAME (name of your AKS cluster)
+#    - AZ_RESOURCE_GROUP (where your cluster is deployed)
+#    - AZ_AKS_CLUSTER (name of your AKS cluster)
 #    - CONTAINER_NAME (name of the container image you would like to push up to your ACR)
 #    - IMAGE_PULL_SECRET_NAME (name of the ImagePullSecret that will be created to pull your ACR image)
-#    - DEPLOYMENT_MANIFEST_PATH (path to the manifest yaml for your deployment)
+#    - APP_MANIFEST_DIR (path to the manifest yaml for your deployment)
 #
 # For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
@@ -31,15 +31,23 @@ name: Build and deploy an app to AKS
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "testing_azure" ]
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: "your-azure-container-registry"
-  CONTAINER_NAME: "your-container-name"
-  RESOURCE_GROUP: "your-resource-group"
-  CLUSTER_NAME: "your-cluster-name"
-  DEPLOYMENT_MANIFEST_PATH: "your-deployment-manifest-path"
+  AZURE_CONTAINER_REGISTRY: "webapps"
+  CONTAINER_NAME: "webapp1"
+  AZ_RESOURCE_GROUP: "webapps"
+  AZ_AKS_CLUSTER: "webapps"
+  APP_MANIFEST_DIR: azure/aks/deploy/manifest/webapp1
+  AZ_REGION: eastus
+  AZ_CONTAINER_REGISTRY: flaskwebapps
+  APP_NAME: webapp1
+  AKS_APP_NAME: "webapp1"
+  AKS_SERVICE: "webapp1"
+  AKS_SERVICE_ACCOUNT: "webapp1-sa"
+  AKS_NAMESPACE: "webapp"
+  GITHUB_SHA: ${{ github.sha }}
 
 jobs:
   buildImage:
@@ -62,7 +70,8 @@ jobs:
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }} \
+           --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.AZ_RESOURCE_GROUP }} .
 
   deploy:
     permissions:
@@ -93,8 +102,8 @@ jobs:
       - name: Get K8s context
         uses: azure/aks-set-context@v3
         with:
-          resource-group: ${{ env.RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.AZ_RESOURCE_GROUP }}
+          cluster-name: ${{ env.AZ_AKS_CLUSTER }}
           admin: 'false'
           use-kubelogin: 'true'
 
@@ -103,6 +112,6 @@ jobs:
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+          manifests: ${{ env.APP_MANIFEST_DIR }}
           images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
