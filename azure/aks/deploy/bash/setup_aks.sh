@@ -6,6 +6,7 @@
 
 
 #environmental variables
+export AZ_SUBSCRIPTION_ID=`az account show --query id --output tsv`
 export AZ_RESOURCE_GROUP=webapps
 export AZ_REGION=eastus
 export AZ_CONTAINER_REGISTRY=flaskwebapps
@@ -59,3 +60,12 @@ az aks get-credentials --resource-group ${AZ_RESOURCE_GROUP} --name ${AZ_AKS_CLU
  envsubst < ${APP_MANIFEST_DIR}/webapp1.yaml | kubectl apply -f -
  envsubst < ${APP_MANIFEST_DIR}/Service.yaml | kubectl apply -f -
  envsubst < ${APP_MANIFEST_DIR}/Deployment.yaml | kubectl apply -f -
+
+
+#Create Azure Credentials (later use for GitHub Actions)
+
+az ad sp create-for-rbac \
+ --name "ghActionWebApp" \
+ --scope /subscriptions/${AZ_SUBSCRIPTION_ID}/resourceGroups/${AZ_RESOURCE_GROUP} \
+ --role Contributor \
+ --sdk-auth > ~/.private/azure_credentials.json

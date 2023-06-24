@@ -16,9 +16,12 @@ az group create --location ${AZ_REGION} --resource-group ${AZ_RESOURCE_GROUP}
 az acr create --resource-group ${AZ_RESOURCE_GROUP} --name ${AZ_CONTAINER_REGISTRY} --sku Basic
 az acr login -n ${AZ_CONTAINER_REGISTRY} --expose-token
 
+az acr update -n $AZ_CONTAINER_REGISTRY --admin-enabled true
+
 docker build -t ${APP_NAME} ${APP_DIR}
 docker tag ${IMAGE_NAME}
 az acr login --name ${AZ_CONTAINER_REGISTRY}
 docker push ${IMAGE_NAME}
 echo "${IMAGE_NAME}" > ~/Downloads/webapp_acr_image.txt
 #docker push myimages08102020.azurecr.io/samples/dbwebapi
+
