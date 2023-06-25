@@ -4,3 +4,9 @@
 .git
 .vscode
 .log
+.class
+.terraform
+.kube
+.idea/workspace.xml
+.o
+

@@ -1,0 +1,26 @@
+# This file configures the webapp1 app which serves public web traffic on port 80
+#export IMAGE_NAME=`cat ~/Downloads/ecr_image.txt | grep imageName|awk '{print $2}'`
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${AKS_APP_NAME}
+  namespace: ${AKS_NAMESPACE}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ${AKS_APP_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${AKS_APP_NAME}
+    spec:
+      serviceAccountName: ${AKS_SERVICE_ACCOUNT}
+      containers:
+      - name: ${AKS_APP_NAME}
+        image: ${IMAGE_NAME}
+        ports:
+        - containerPort: 25443
+        env:
+          - name: PORT
+            value: "25443"

@@ -1,0 +1,14 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: podpvc
+  namespace: ${AKS_NAMESPACE} 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: csi-azure-files
+  resources:
+    requests:
+      storage: 50Gi
+
+
