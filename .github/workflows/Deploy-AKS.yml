@@ -119,7 +119,7 @@ jobs:
 
       # Deploys application based on given manifest file
       - name: Deploys application
-        working-directory: ${{env.MANIFESTS_DIR}}
+        working-directory: ${{env.APP_MANIFEST_DIR}}
         env: 
           IMAGE_NAME: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
         run: |-
