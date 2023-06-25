@@ -65,10 +65,7 @@ jobs:
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-#          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+
       - run: |
           az webapp list --query "[?state=='Running']"
       # Builds and pushes an image up to your Azure Container Registry
@@ -84,37 +81,18 @@ jobs:
            --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.AZ_RESOURCE_GROUP }} .
 
   Scan:
-    needs: [Build]
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
-    # steps:
-    #   # Checks out the repository this file is in
-    #   - uses: actions/checkout@v3
-
-    #   # Logs in with your Azure credentials
-    #   - name: Azure login
-    #     uses: azure/login@v1.4.6
-    #     with:
-    #       creds: ${{ secrets.AZURE_CREDENTIALS }}
-    #   - uses: azure/docker-login@v1
-    #     with:
-    #       login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
-    #       username: ${{ secrets.ACR_USER }}
-    #       password: ${{ secrets.ACR_PASSWORD }}
-    #   - name: Run Trivy vulnerability scanner
-    #     uses: aquasecurity/trivy-action@master
-    #     with:
-    #       image-ref: '${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}'
-    #       format: 'json'
-    #       #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
-    #       ignore-unfixed: true
-    #       vuln-type: 'os,library'
-    #       severity: 'CRITICAL,HIGH'      
-      steps:
-        - uses: azure/container-scan@v0
-          with:
-            image-name: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }} 
-            username: ${{ secrets.ACR_USER }}
-            password: ${{ secrets.ACR_PASSWORD }}        
+    needs: [Build]
+    steps:
+      - uses: azure/container-scan@v0
+        with:
+          image-name: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }} 
+          username: ${{ secrets.ACR_USER }}
+          password: ${{ secrets.ACR_PASSWORD }}        
   Deploy:
     permissions:
       actions: read
@@ -131,9 +109,7 @@ jobs:
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
 
       # Use kubelogin to configure your kubeconfig for Azure auth
       - name: Set up kubelogin for non-interactive login
@@ -182,11 +158,4 @@ jobs:
           notification_title: "{workflow}:{job} has {status_message}"
           message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
           footer: "Logs <{run_url}|{job}>"
-          notify_when: "failure,success"         
-
-        # uses: Azure/k8s-deploy@v4
-        # with:
-        #   action: deploy
-        #   manifests: ${{ env.APP_MANIFEST_DIR }}
-        #   images: |
-        #     ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
+          notify_when: "failure,success" 
