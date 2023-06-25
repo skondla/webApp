@@ -46,6 +46,7 @@ env:
   AKS_SERVICE: "webapp1"
   AKS_SERVICE_ACCOUNT: "webapp1-sa"
   AKS_NAMESPACE: "webapp"
+  APP_DIR: app1
   GITHUB_SHA: ${{ github.sha }}
 
 jobs:
