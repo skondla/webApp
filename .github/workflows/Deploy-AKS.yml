@@ -60,7 +60,7 @@ jobs:
 
       # Logs in with your Azure credentials
       - name: Azure login
-        uses: azure/login@v1
+        uses: azure/login@v1.4.3
         with:
 #          creds: ${{ secrets.AZURE_CREDENTIALS }}
 #          client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -94,7 +94,7 @@ jobs:
 
       # Logs in with your Azure credentials
       - name: Azure login
-        uses: azure/login@v1
+        uses: azure/login@v1.4.3
         with:
 #          creds: ${{ secrets.AZURE_CREDENTIALS }}
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
