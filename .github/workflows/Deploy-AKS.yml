@@ -159,7 +159,7 @@ jobs:
         #Check application is running, test REST endpoints
       - name: Verify Coontainer Application
         run: |-
-          kubectl rollout status deploy ${{env.EKS_APP_NAME}} -n ${{env.EKS_NAMESPACE}}
+          kubectl rollout status deploy ${{env.AKS_APP_NAME}} -n ${{env.AKS_NAMESPACE}}
           curl -Lk https://`kubectl get svc -n ${{env.AKS_NAMESPACE}} | grep ${{env.AKS_SERVICE}} | awk '{print $4}'`:${{env.AKS_APP_USER_PORT}}/backup/create
           curl -Lk https://`kubectl get svc -n ${{env.AKS_NAMESPACE}} | grep ${{env.AKS_SERVICE}} | awk '{print $4}'`:${{env.AKS_APP_USER_PORT}}/backup/delete
           curl -Lk https://`kubectl get svc -n ${{env.AKS_NAMESPACE}} | grep ${{env.AKS_SERVICE}} | awk '{print $4}'`:${{env.AKS_APP_USER_PORT}}/backup/status
