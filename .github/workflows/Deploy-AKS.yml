@@ -67,6 +67,8 @@ jobs:
 #          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 #          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+      - run: |
+          az webapp list --query "[?state=='Running']"
       # Builds and pushes an image up to your Azure Container Registry
       - uses: azure/docker-login@v1
         with:
