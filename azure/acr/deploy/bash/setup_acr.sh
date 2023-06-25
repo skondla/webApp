@@ -25,3 +25,22 @@ docker push ${IMAGE_NAME}
 echo "${IMAGE_NAME}" > ~/Downloads/webapp_acr_image.txt
 #docker push myimages08102020.azurecr.io/samples/dbwebapi
 
+
+
+#Create Azure AD app and Service Principal
+
+#Create the Azure Active Directory application.
+
+az ad app create --display-name ${APP_NAME}
+
+#Create a service principal.
+
+az ad sp create --id $appId
+
+
+az role assignment create \
+ --role contributor \
+ --subscription $subscriptionId \
+ --assignee-object-id  $assigneeObjectId \
+ --assignee-principal-type ServicePrincipal \
+ --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName
