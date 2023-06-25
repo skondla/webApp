@@ -109,12 +109,12 @@ jobs:
     #       ignore-unfixed: true
     #       vuln-type: 'os,library'
     #       severity: 'CRITICAL,HIGH'      
-    steps:
-      - uses: azure/container-scan@v0
-      with:
-        image-name: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }} 
-        username: ${{ secrets.ACR_USER }}
-        password: ${{ secrets.ACR_PASSWORD }}        
+      steps:
+        - uses: azure/container-scan@v0
+          with:
+            image-name: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }} 
+            username: ${{ secrets.ACR_USER }}
+            password: ${{ secrets.ACR_PASSWORD }}        
   Deploy:
     permissions:
       actions: read
