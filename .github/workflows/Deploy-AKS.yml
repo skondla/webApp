@@ -119,9 +119,20 @@ jobs:
 
       # Deploys application based on given manifest file
       - name: Deploys application
-        uses: Azure/k8s-deploy@v4
-        with:
-          action: deploy
-          manifests: ${{ env.APP_MANIFEST_DIR }}
-          images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
+        working-directory: ${{env.MANIFESTS_DIR}}
+        env: 
+          IMAGE_NAME: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
+        run: |-
+          envsubst < webapp1.yaml | kubectl apply -f -
+          envsubst < Service.yaml | kubectl apply -f -
+          envsubst < Deployment.yaml | kubectl apply -f -
+          kubectl get pods -o wide
+          kubectl get svc -o wide 
+          sleep 60
+
+        # uses: Azure/k8s-deploy@v4
+        # with:
+        #   action: deploy
+        #   manifests: ${{ env.APP_MANIFEST_DIR }}
+        #   images: |
+        #     ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
