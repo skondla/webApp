@@ -4,6 +4,12 @@ kind: Deployment
 metadata:
   name: $AKS_APP_NAME
   namespace: $AKS_NAMESPACE
+  annotations: 
+    endpoing_create: "curl -Lk https://`kubectl get svc -n $AKS_NAMESPACE | grep $AKS_APP_NAME | awk '{print $4}'`:$AKS_APP_USER_PORT/backup/create"
+    endpoing_delete: "curl -Lk https://`kubectl get svc -n $AKS_NAMESPACE | grep $AKS_APP_NAME | awk '{print $4}'`:$AKS_APP_USER_PORT/backup/delete"
+    endpoing_status: "curl -Lk https://`kubectl get svc -n $AKS_NAMESPACE | grep $AKS_APP_NAME | awk '{print $4}'`:$AKS_APP_USER_PORT/backup/status"
+    creator: skondla.ai@gmail.com
+    purpose: Deploy Python Flask API application to automate backups for databases
 spec:
   replicas: 3
   selector:
