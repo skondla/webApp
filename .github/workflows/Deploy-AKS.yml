@@ -27,7 +27,7 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 # For more options with the actions used below please refer to https://github.com/Azure/login
 
-name: Build and deploy an app to AKS
+name: Deploy webapp to AKS Cluster
 
 on:
   push:
@@ -86,40 +86,35 @@ jobs:
   Scan:
     needs: [Build]
     runs-on: ubuntu-latest
-    steps:
-      # Checks out the repository this file is in
-      - uses: actions/checkout@v3
-
-      # Logs in with your Azure credentials
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
-          username: ${{ secrets.ACR_USER }}
-          password: ${{ secrets.ACR_PASSWORD }}
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}'
-          format: 'json'
-          #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'      
     # steps:
-    #   - uses: actions/checkout@v2
-    #   - name: Scan image for vulnerabilities
-    #     uses: azure/container-scan@v0.1.0
+    #   # Checks out the repository this file is in
+    #   - uses: actions/checkout@v3
+
+    #   # Logs in with your Azure credentials
+    #   - name: Azure login
+    #     uses: azure/login@v1.4.6
     #     with:
-    #       image-ref: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}
-    #       image-tag: ${{ env.GITHUB_SHA }}
-    #       azure-container-registry: ${{ env.AZURE_CONTAINER_REGISTRY }}
-    #       azure-container-registry-key: ${{ secrets.ACR_PASSWORD }}
-    #       azure-container-registry-login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
-    #       severity-threshold: low          
+    #       creds: ${{ secrets.AZURE_CREDENTIALS }}
+    #   - uses: azure/docker-login@v1
+    #     with:
+    #       login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
+    #       username: ${{ secrets.ACR_USER }}
+    #       password: ${{ secrets.ACR_PASSWORD }}
+    #   - name: Run Trivy vulnerability scanner
+    #     uses: aquasecurity/trivy-action@master
+    #     with:
+    #       image-ref: '${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }}'
+    #       format: 'json'
+    #       #exit-code: '1' #By pass and continue if vulnerabilities found (Not recommended, testing complete devSecOps pipeline)
+    #       ignore-unfixed: true
+    #       vuln-type: 'os,library'
+    #       severity: 'CRITICAL,HIGH'      
+    steps:
+      - uses: azure/container-scan@v0
+      with:
+        image-name: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.GITHUB_SHA }} 
+        username: ${{ secrets.ACR_USER }}
+        password: ${{ secrets.ACR_PASSWORD }}        
   Deploy:
     permissions:
       actions: read
