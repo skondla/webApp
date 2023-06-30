@@ -8,6 +8,15 @@
 #enviroment variables
 
 source ./webapp_eks_env.sh
+
+aws sts get-caller-identity
+#Step 1.1: Create your Amazon EKS cluster
+ 
+# aws cloudformation create-stack \
+#   --region ${AWS_REGION} \
+#   --stack-name ${CF_STACK_NAME} \
+#   --template-url https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml
+
 cat >eks-cluster-role-trust-policy.json <<EOF
 {
   "Version": "2012-10-17",
@@ -113,12 +122,6 @@ aws iam create-role --role-name fullAccessEKSClusterRole --assume-role-policy-do
 
 aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy --role-name fullAccessEKSClusterRole
 
-#Step 2: Configure your computer to communicate with your cluster
-aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER_NAME}
-
-kubectl get svc
-
-#Step 3: Launch and Configure Amazon EKS Worker Nodes
 
 cat >node-role-trust-relationship.json <<EOF
 {
@@ -150,6 +153,18 @@ aws iam attach-role-policy \
 aws iam attach-role-policy \
   --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy \
   --role-name AmazonEKSNodeRole
+#Get subnets from stack and inject them to eksctl create cluster command
+
+aws cloudformation describe-stacks --stack-name ${EKS_APP_NAME}-stack --query "Stacks[0].Outputs[0].OutputValue" --output text > ~/Downloads/cf_stack.output
+aws cloudformation describe-stacks --stack-name ${EKS_APP_NAME}-stack --query "Stacks[0].Outputs[1].OutputValue" --output text >> ~/Downloads/cf_stack.output 
+aws cloudformation describe-stacks --stack-name ${EKS_APP_NAME}-stack --query "Stacks[0].Outputs[2].OutputValue" --output text >> ~/Downloads/cf_stack.output
+echo `cat ~/Downloads/cf_stack.output  | grep "subnet"` | { while read -d, i; do echo "$i"; done; echo "$i"; } > ~/Downloads/subnets.list
+
+export SUBNET_FILE=~/Downloads/subnets.list
+export EKS_PUBLIC_SUBNET1=`awk 'NR==1' ${SUBNET_FILE}`
+export EKS_PUBLIC_SUBNET2=`awk 'NR==2' ${SUBNET_FILE}`
+export EKS_PRIVATE_SUBNET1=`awk 'NR==3' ${SUBNET_FILE}`
+export EKS_PRIVATE_SUBNET2=`awk 'NR==4' ${SUBNET_FILE}`
 
 
 eksctl create cluster \
@@ -201,3 +216,15 @@ kubectl get svc
  envsubst < ${APP_MANIFEST_DIR}/webapp1.yaml | kubectl apply -f -
  envsubst < ${APP_MANIFEST_DIR}/Service.yaml | kubectl apply -f -
  envsubst < ${APP_MANIFEST_DIR}/Deployment.yaml | kubectl apply -f -
+
+
+ #Enable logging on EKS cluster
+
+ eksctl utils update-cluster-logging \
+  --enable-types="all" \
+  --region=${AWS_REGION} \
+  --cluster=${EKS_CLUSTER_NAME} \
+  --approve
+
+#2023-06-29 17:33:55 [ℹ]  will update CloudWatch logging for cluster "webapps-demo" in "us-east-1" 
+#(enable types: api, audit, authenticator, controllerManager, scheduler & no types to disable)

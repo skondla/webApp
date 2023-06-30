@@ -139,25 +139,25 @@ aws iam attach-role-policy \
   --role-name AmazonEKSNodeRole
 
 
-eksctl create cluster \
- --name ${EKS_CLUSTER_NAME}-2 \
- --version 1.27 \
- --region ${AWS_REGION} \
- --nodegroup-name standard-workers \
- --node-type t3.micro \
- --nodes 3 \
- --nodes-min 1 \
- --nodes-max 4 \
- --managed \
-   --ssh-public-key ~/.ssh/id_rsa.pub \
-  --vpc-private-subnets=subnet-076afdef0f9911f16,subnet-001ae6deda7adaf15 \
-  --vpc-public-subnets=subnet-065bbff8f2e547c0e,subnet-078382a4e4f2333da
+# eksctl create cluster \
+#  --name ${EKS_CLUSTER_NAME}-2 \
+#  --version 1.27 \
+#  --region ${AWS_REGION} \
+#  --nodegroup-name standard-workers \
+#  --node-type t3.micro \
+#  --nodes 3 \
+#  --nodes-min 1 \
+#  --nodes-max 4 \
+#  --managed \
+#    --ssh-public-key ~/.ssh/id_rsa.pub \
+#   --vpc-private-subnets=subnet-076afdef0f9911f16,subnet-001ae6deda7adaf15 \
+#   --vpc-public-subnets=subnet-065bbff8f2e547c0e,subnet-078382a4e4f2333da
 
-aws eks update-kubeconfig \
- --region ${AWS_REGION} \
- --name ${EKS_CLUSTER_NAME}
+# aws eks update-kubeconfig \
+#  --region ${AWS_REGION} \
+#  --name ${EKS_CLUSTER_NAME}
 
-kubectl get svc
+# kubectl get svc
 
 #Step 3.2: Launch the Amazon EKS worker nodes
 
