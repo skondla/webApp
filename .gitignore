@@ -7,6 +7,9 @@
 .log
 .class
 .terraform
+.terraform.lock.hcl
+*.tfstate
+*.plan
 .kube
 .idea/workspace.xml
 .o
