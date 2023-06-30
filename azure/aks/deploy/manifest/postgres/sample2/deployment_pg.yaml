@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-aks-csi
+  namespace: ${AKS_NAMESPACE}
+  labels:
+    app: ${AKS_APP_NAME}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ${AKS_APP_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${AKS_APP_NAME}
+    spec:
+      containers:
+        - image: postgres:11
+          name: postgres-aks-csi
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_DB
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name:  pg11-csi-secrets
+                  key: pg_root
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-stateful-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-stateful-data
+          persistentVolumeClaim:
+            claimName: podpvc
+
+
+
