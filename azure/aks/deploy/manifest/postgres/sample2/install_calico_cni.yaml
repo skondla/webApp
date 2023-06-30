@@ -1,0 +1,6 @@
+#!/bin/bash
+#wget -O canal.yaml https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/hosted/canal/canal.yaml
+#kubectl apply -f canal.yaml
+
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml -O
+kubectl apply -f calico.yaml

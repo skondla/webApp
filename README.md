@@ -2,7 +2,7 @@
 [![slack](https://img.shields.io/badge/slack-chat-yellow)](https://join.slack.com/t/devops-zwf1016/shared_invite/zt-1wsafgivm-iI88~ZqZBaKGzYhD8N2JsA)
 [![CICD](https://github.com/skondla/webapp/actions/workflows/Deploy-GKE.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
 [![CICD](https://github.com/skondla/webapp/actions/workflows/Deploy-EKS.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
-
+[![Deploy webapp to AKS Cluster](https://github.com/skondla/webApp/actions/workflows/Deploy-AKS.yml/badge.svg)](https://github.com/skondla/webApp/actions/workflows/Deploy-AKS.yml)
 
 
 # Introduction
