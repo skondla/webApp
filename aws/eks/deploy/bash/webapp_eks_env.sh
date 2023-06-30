@@ -17,7 +17,13 @@ export EKS_SERVICE_ACCOUNT="webapp1-sa"
 export EKS_NAMESPACE="webapp"
 export IMAGE_NAME=`cat ~/Downloads/webapp_ecr_image.txt | grep imageName|awk '{print $2}'`
 export APP_MANIFEST_DIR="../manifest/webapp1"
-export EKS_PRIVATE_SUBNET1="subnet-076afdef0f9911f16"
-export EKS_PRIVATE_SUBNET2="subnet-001ae6deda7adaf15"
-export EKS_PUBLIC_SUBNET1="subnet-065bbff8f2e547c0e"
-export EKS_PUBLIC_SUBNET2="subnet-078382a4e4f2333da"
+# export EKS_PRIVATE_SUBNET1="subnet-02b74b454744a8394"
+# export EKS_PRIVATE_SUBNET2="subnet-0adda7ae20f26f1d5"
+# export EKS_PUBLIC_SUBNET1="subnet-0635302237d16e28a"
+# export EKS_PUBLIC_SUBNET2="subnet-0be1b29a1c6677f00"
+
+export SUBNET_FILE=~/Downloads/subnets.list
+export EKS_PUBLIC_SUBNET1=`awk 'NR==1' ${SUBNET_FILE}`
+export EKS_PUBLIC_SUBNET2=`awk 'NR==2' ${SUBNET_FILE}`
+export EKS_PRIVATE_SUBNET1=`awk 'NR==3' ${SUBNET_FILE}`
+export EKS_PRIVATE_SUBNET2=`awk 'NR==4' ${SUBNET_FILE}`

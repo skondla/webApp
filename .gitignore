@@ -1,6 +1,13 @@
 .output
+.output
 .DS_Store
 .pyc
 .git
 .vscode
 .log
+.class
+.terraform
+.kube
+.idea/workspace.xml
+.o
+

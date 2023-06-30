@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-eks-csi-svc
+  namespace: ${EKS_NAMESPACE}
+  labels:
+    name: ${EKS_APP_NAME}-pg
+spec:
+  ports:
+    - port: 5432
+  type: LoadBalancer
+  selector:
+    name: ${EKS_APP_NAME}-pg
