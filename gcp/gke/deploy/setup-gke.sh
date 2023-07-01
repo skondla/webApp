@@ -7,9 +7,10 @@
 
 # Set parameters
 source ~/.bash_profile
-export GKE_PROJECT=${GCP_PROJECT_ID} #env variable from  ~/.secrets
+export GKE_PROJECT=`gcloud config get project`
 export GKE_CLUSTER="webapp1-demo-cluster"
 export GKE_APP_NAME="webapp1-demo-shop"
+#export GKE_ARTIFACTS_REPO=${GKE_PROJECT}
 export GKE_SERVICE="webapp1-service"
 export GKE_SERVICE_ACCOUNT="webapp1-serviceaccount"
 export GKE_DEPLOYMENT_NAME="webapp1-deployment"
@@ -78,7 +79,7 @@ fi
 gcloud container clusters get-credentials $GKE_CLUSTER
 
 # Create repository
-gcloud artifacts repositories create $GKE_PROJECT \
+gcloud artifacts repositories create ${GKE_PROJECT} \
   --repository-format=docker \
   --location=$GKE_REGION \
   --description="Docker repository"
