@@ -1,5 +1,5 @@
 #!/bin/bash
-#Author: skondla@me.com
+#Author: skondla.ai@gmail.com
 #Purpose: Create a new instance of GKE cluster and deploy a container web application
 
 # Create a project and set GKE_PROJECT to the project id:
