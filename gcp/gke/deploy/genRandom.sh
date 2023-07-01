@@ -1,4 +1,5 @@
 #!/bin/bash
+#Author: skondla.ai@gmail.com
 # bash generate random alphanumeric string
 #
 
