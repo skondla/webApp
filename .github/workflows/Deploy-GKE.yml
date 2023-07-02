@@ -24,6 +24,7 @@ env:
   APP_DIR: app1
   GKE_APP_PORT: 25443
   GITHUB_SHA: ${{ github.sha }}
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
   Checkout:
     runs-on: ubuntu-latest
@@ -38,7 +39,7 @@ jobs:
         service_account_key: ${{ secrets.GKE_SA_KEY }}
         project_id: ${{ secrets.GKE_PROJECT }}
         export_default_credentials: true 
-        
+
   Test:
     needs: [Checkout]
     runs-on: ubuntu-latest
@@ -50,10 +51,41 @@ jobs:
           echo "Testing Application, Not complete yet"
           uname -a
           hostname -f
+  
+  # SonarCloud:
+  #   needs: [Test]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         # Disabling shallow clone is recommended for improving relevancy of reporting
+  #         fetch-depth: 0
+  #     - name: SonarCloud Scan
+  #       uses: sonarsource/sonarcloud-github-action@master
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+  # Snyk:
+  #   runs-on: ubuntu-latest
+  #   needs: [Test]
+  #   # needs: [SonarCloud]
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Run Snyk to check for vulnerabilities
+  #       uses: snyk/actions/node@master # For node projects, change accordingly
+  #       env:
+  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}   
+  #         working-directory: ${{env.APP_DIR}} 
+  #       with:
+  #         command: monitor
+  
 
   # Build the Docker image
   Build:
-    needs: [Test] 
+    # needs: [Snyk] 
+    needs: [Test]
+    # needs: [zap_scan]
     runs-on: ubuntu-latest
     steps:
     - uses: google-github-actions/setup-gcloud@v0.6.0
@@ -112,7 +144,7 @@ jobs:
   Deploy:
     needs: [Scan]
     runs-on: ubuntu-latest
-    environment: production
+    environment: Production
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -151,6 +183,10 @@ jobs:
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
         curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete
+        # env:
+        #   STATUS_EP: https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status
+        #   CREATE_EP: https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/create 
+        #   DELETE_EP: https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/delete
     
     #Notify Slack
     - name: Notify Slack
@@ -164,3 +200,24 @@ jobs:
         message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
         footer: "Logs <{run_url}|{job}>"
         notify_when: "failure,success"      
+  
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: zap_scan
+    needs: [Deploy]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.6.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
+          target: "https://34.150.142.59:25443/backup/status"
+          # target: ${{env.CREATE_EP}}
+          # target: ${{env.DELETE_EP}}
+          #target: "https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status" # Change URL or IP of your target application
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'      
