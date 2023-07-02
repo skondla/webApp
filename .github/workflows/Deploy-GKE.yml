@@ -66,23 +66,43 @@ jobs:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         
-  Snyk:
+  # Snyk:
+  #   runs-on: ubuntu-latest
+  #   needs: [Test]
+  #   # needs: [SonarCloud]
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Run Snyk to check for vulnerabilities
+  #       uses: snyk/actions/node@master # For node projects, change accordingly
+  #       env:
+  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}   
+  #         working-directory: ${{env.APP_DIR}} 
+  #       with:
+  #         command: monitor
+  
+  zap_scan:
     runs-on: ubuntu-latest
+    name: zap
     needs: [Test]
-    # needs: [SonarCloud]
     steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master # For node projects, change accordingly
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}   
-          working-directory: ${{env.APP_DIR}} 
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
-          command: monitor
+          ref: master
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.6.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
+          target: 'http://test.com' # Change URL or IP of your target application
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
 
   # Build the Docker image
   Build:
-    needs: [Snyk] 
+    # needs: [Snyk] 
+    # needs: [Test]
+    needs: [zap_scan]
     runs-on: ubuntu-latest
     steps:
     - uses: google-github-actions/setup-gcloud@v0.6.0
