@@ -80,29 +80,12 @@ jobs:
   #       with:
   #         command: monitor
   
-  zap_scan:
-    runs-on: ubuntu-latest
-    name: zap
-    needs: [Test]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: master
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.6.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          docker_name: 'owasp/zap2docker-stable'
-          target: 'http://test.com' # Change URL or IP of your target application
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
 
   # Build the Docker image
   Build:
     # needs: [Snyk] 
-    # needs: [Test]
-    needs: [zap_scan]
+    needs: [Test]
+    # needs: [zap_scan]
     runs-on: ubuntu-latest
     steps:
     - uses: google-github-actions/setup-gcloud@v0.6.0
@@ -161,7 +144,7 @@ jobs:
   Deploy:
     needs: [Scan]
     runs-on: ubuntu-latest
-    environment: production
+    environment: Production
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -213,3 +196,21 @@ jobs:
         message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
         footer: "Logs <{run_url}|{job}>"
         notify_when: "failure,success"      
+  
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: zap_scan
+    needs: [Deploy]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.6.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
+          target: "curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status" # Change URL or IP of your target application
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'      
