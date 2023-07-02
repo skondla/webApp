@@ -76,7 +76,7 @@ jobs:
         uses: snyk/actions/node@master # For node projects, change accordingly
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}   
-          working-directory: ${{env.MANIFESTS_DIR}} 
+          working-directory: ${{env.APP_DIR}} 
         with:
           command: monitor
 
