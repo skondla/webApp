@@ -211,6 +211,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: 'owasp/zap2docker-stable'
-          target: "curl -Lk https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status" # Change URL or IP of your target application
+          target: "https://`kubectl get svc -n ${{env.GKE_NAMESPACE}} | grep ${{env.GKE_SERVICE}} | awk '{print $4}'`:${{env.GKE_APP_PORT}}/backup/status" # Change URL or IP of your target application
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'      
