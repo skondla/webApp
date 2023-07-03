@@ -23,7 +23,8 @@ export APP_MANIFEST_DIR="../manifest/webapp1"
 # export EKS_PUBLIC_SUBNET2="subnet-0be1b29a1c6677f00"
 
 export SUBNET_FILE=~/Downloads/subnets.list
-export EKS_PUBLIC_SUBNET1=`awk 'NR==1' ${SUBNET_FILE}`
-export EKS_PUBLIC_SUBNET2=`awk 'NR==2' ${SUBNET_FILE}`
-export EKS_PRIVATE_SUBNET1=`awk 'NR==3' ${SUBNET_FILE}`
-export EKS_PRIVATE_SUBNET2=`awk 'NR==4' ${SUBNET_FILE}`
+# export EKS_PUBLIC_SUBNET1=`awk 'NR==1' ${SUBNET_FILE}`
+# export EKS_PUBLIC_SUBNET2=`awk 'NR==2' ${SUBNET_FILE}`
+# export EKS_PRIVATE_SUBNET1=`awk 'NR==3' ${SUBNET_FILE}`
+# export EKS_PRIVATE_SUBNET2=`awk 'NR==4' ${SUBNET_FILE}`
+export CF_STACK_NAME=${EKS_CLUSTER_NAME}

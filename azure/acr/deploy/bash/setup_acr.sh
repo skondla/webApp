@@ -10,7 +10,9 @@ export AZ_CONTAINER_REGISTRY=flaskwebapps
 export IMAGE_TAG=$(openssl rand -hex 32)
 export APP_DIR=../../../../app1/
 export APP_NAME=webapp1
-export IMAGE_NAME=${APP_NAME}.${AZ_CONTAINER_REGISTRY}.azurecr.io/${APP_NAME}:${IMAGE_TAG}
+export IMAGE_NAME=${AZ_CONTAINER_REGISTRY}.azurecr.io/${APP_NAME}:${IMAGE_TAG}
+
+az login
 
 az group create --location ${AZ_REGION} --resource-group ${AZ_RESOURCE_GROUP}
 az acr create --resource-group ${AZ_RESOURCE_GROUP} --name ${AZ_CONTAINER_REGISTRY} --sku Basic
@@ -19,8 +21,9 @@ az acr login -n ${AZ_CONTAINER_REGISTRY} --expose-token
 az acr update -n $AZ_CONTAINER_REGISTRY --admin-enabled true
 
 docker build -t ${APP_NAME} ${APP_DIR}
-docker tag ${IMAGE_NAME}
+docker tag ${APP_NAME} ${IMAGE_NAME}
 az acr login --name ${AZ_CONTAINER_REGISTRY}
+az acr list --resource-group ${AZ_RESOURCE_GROUP} --query "[].{acrLoginServer:loginServer}" --output table
 docker push ${IMAGE_NAME}
 echo "${IMAGE_NAME}" > ~/Downloads/webapp_acr_image.txt
 #docker push myimages08102020.azurecr.io/samples/dbwebapi
