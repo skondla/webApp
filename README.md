@@ -3,7 +3,7 @@
 [![CICD](https://github.com/skondla/webapp/actions/workflows/Deploy-GKE.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
 [![CICD](https://github.com/skondla/webapp/actions/workflows/Deploy-EKS.yml/badge.svg?event=push)](https://github.com/skondla/webApp/actions)
 [![Deploy webapp to AKS Cluster](https://github.com/skondla/webApp/actions/workflows/Deploy-AKS.yml/badge.svg)](https://github.com/skondla/webApp/actions/workflows/Deploy-AKS.yml)
-
+[![Twitter Follow](https://img.shields.io/twitter/follow/skondla?style=social)](https://twitter.com/skondla)
 
 # Introduction
     This source code is an example of taking an automatic on-demand backup of an RDS instance running in AWS VPC using AWS Python SDK (boto3). Alternatively 
