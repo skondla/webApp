@@ -137,4 +137,23 @@ jobs:
           notification_title: "{workflow}:{job} has {status_message}"
           message_format: "{emoji} *{workflow}:{job}* {status_message} in <{repo_url}|{repo}>"
           footer: "Logs <{run_url}|{job}>"
-          notify_when: "failure,success"       
+          notify_when: "failure,success"      
+  
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: zap_scan
+    needs: [Deploy]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.6.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
+          target: "https://a50ca0878c93c4885aa8a064120b93c1-237887041.us-east-1.elb.amazonaws.com:25443/backup/status"
+          # target: ${{env.CREATE_EP}}
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'         
