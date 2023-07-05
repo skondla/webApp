@@ -38,7 +38,6 @@
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
     echo
   
-    !<---(https://10.10.x.x:25443/backup/create)-->
 
 ##### check cluster db snapshot
   
@@ -47,7 +46,6 @@
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
     echo
-    !<---(https://10.10.x.x:25443/backup/status)-->
 
 ##### delete cluster db snapshot
   
@@ -56,14 +54,11 @@
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-vxt3omEzZi92f.us-east-1.rds.amazonaws.com"; \
     --data "endpoint=ecomm-integ-postgresdb-aurora.cluster-ro-f657cdvjhwda.us-east-1.rds.amazonaws.com"; \
     echo
-  
-    !<---(https://10.10.x.x:25443/backup/delete)-->
 
 
 ###  Checking Connections
     * Troubleshooting*
 
-  
     admin@ip-10-96-6-124:/data2/api/db$ ps -ef|grep dbWebAPI.py 
     admin    13047 13042  0 21:00 ?        00:00:00 /bin/sh -c /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py > /data2/api/db/log 2>&1
     admin    13051 13047  0 21:00 ?        00:00:00 /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py
