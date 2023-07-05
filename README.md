@@ -16,12 +16,12 @@
     output: 
 
     ['', '/Users/skondla/miniconda3/lib/python39.zip', '/Users/skondla/miniconda3/lib/python3.9', '/Users/skondla/miniconda3/lib/python3.9/lib-dynload', '/Users/skondla/miniconda3/lib/python3.9/site-packages']
-### H2 Alternatively cp files in lib directory to common python libriary (check version) 
+### Alternatively cp files in lib directory to common python libriary (check version) 
     sudo cp lib/rdsAdmin.py /Users/skondla/miniconda3/lib/python3.9
 
     ['', '/Users/skondla/miniconda3/lib/python38.zip', '/Users/skondla/miniconda3/lib/python3.8', '/Users/skondla/miniconda3/lib/python3.8/lib-dynload', '/Users/skondla/miniconda3/lib/python3.8/site-packages']
 
-### H2 Change appConfig.yaml hostname and port matching your host IP
+### Change appConfig.yaml hostname and port matching your host IP
 ### scheduled to run in cron
     #DB webApp
     */5 * * * * /usr/bin/flock -n /tmp/fullWebapp.lock python /data2/api/db/dbWebAPI.py > /data2/api/db/log 2>&1
