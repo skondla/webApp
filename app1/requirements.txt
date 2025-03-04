@@ -1,7 +1,7 @@
 flask
 flask-restful
 PyYAML==6.0
-jsonlib-python3
+#jsonlib-python3
 requests
 boto3
 botocore

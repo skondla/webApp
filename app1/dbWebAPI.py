@@ -2,9 +2,10 @@
 #Author: skondla@me.com
 #purpose: Build a simple python WebApp & REST API to call database service requests
 #coding=utf-8
-from flask import Flask, request, render_template, jsonify, Response, escape
+from flask import Flask, request, render_template, jsonify, Response #, escape
 from flask_restful import reqparse, abort, Api, Resource
-from rdsAdmin import RDSDescribe, RDSCreate, RDSDelete
+from markupsafe import escape
+from lib.rdsAdmin import RDSDescribe, RDSCreate, RDSDelete
 import sys
 import datetime
 import yaml
@@ -17,6 +18,10 @@ __dbEndPoint__ = ''
 __snapshotStatus__ = ''
 
 app = Flask(__name__)
+
+@app.route('/')
+def landing():
+    return render_template('index.html')
 
 @app.route('/backup')
 def my_form():
@@ -71,7 +76,7 @@ def delete_post():
 
 @app.route('/data')
 def names():
-    data = {"names": ["Sudheer", "Kondla", "Neil", "Nikhil"]}
+    data = {"names": ["Sudheer", "Jim", "Scott", "Neil"]}
     return jsonify(data)
 
 def snapshotStaus(snapshotName,dBURL):
@@ -106,25 +111,39 @@ def deleteSnapshot(snapshotName,dBURL):
         print (dBURL + ' is NOT a cluster')
         return RDSDelete().delete_db_snapshot(snapshotName)
 
-def appConfig():
-    with open('appConfig.yaml', 'r') as f:
-        doc = yaml.load(f, Loader=yaml.FullLoader)
-        hostname = doc["appConfig"]["hostname"]
-        port = doc["appConfig"]["port"]
-        config = {hostname,port}
-        return config
+##updated applicaton config and certs path (testing only, check config/appConfig.yaml for absolute path)
+def app_config():
+    with open("config/appConfig.yaml", "r") as f:
+        doc = yaml.safe_load(f)
+        return doc["appConfig"].get("hostname"), doc["appConfig"].get("port"), doc["appConfig"].get("certificate"), doc["appConfig"].get("key")
 
-if __name__ == '__main__':
-   sys.path.append('/app/')
-   with open('/app/config/appConfig.yaml', 'r') as f:
-    doc = yaml.load(f, Loader=yaml.FullLoader)
-    hostname = str(doc["appConfig"]["hostname"])
-    port = str(doc["appConfig"]["port"])
-    certificate = str(doc["appConfig"]["certificate"])
-    key = str(doc["appConfig"]["key"])
-   #app.run(debug=True)	
-   context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-   context.load_cert_chain(certificate,key)	
-   app.run(host=hostname, port=port, ssl_context=(context),threaded=True) 
-   #app.run(host=hostname, port=port, debug=True,ssl_context=(context),threaded=True)
-   #app.run(host=hostname, port=port, debug=True,threaded=True)
+if __name__ == "__main__":
+    hostname, port, certificate, key = app_config()
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    ssl_context.load_cert_chain(certificate, key)
+    app.run(host=hostname, port=port, ssl_context=(ssl_context),threaded=True) 
+
+    
+# def appConfig():
+#     with open('appConfig.yaml', 'r') as f:
+#         doc = yaml.load(f, Loader=yaml.FullLoader)
+#         hostname = doc["appConfig"]["hostname"]
+#         port = doc["appConfig"]["port"]
+#         config = {hostname,port}
+#         return config
+
+# if __name__ == '__main__':
+#     # sys.path.append('/app/')
+#     # with open('/app/config/appConfig.yaml', 'r') as f:
+#     with open('config/appConfig.yaml', 'r') as f:
+#         doc = yaml.load(f, Loader=yaml.FullLoader)
+#         hostname = str(doc["appConfig"]["hostname"])
+#         port = str(doc["appConfig"]["port"])
+#         certificate = str(doc["appConfig"]["certificate"])
+#         key = str(doc["appConfig"]["key"])
+#     #app.run(debug=True)	
+#     context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+#     context.load_cert_chain(certificate,key)	
+#     app.run(host=hostname, port=port, ssl_context=(context),threaded=True) 
+#     #app.run(host=hostname, port=port, debug=True,ssl_context=(context),threaded=True)
+#     #app.run(host=hostname, port=port, debug=True,threaded=True)
